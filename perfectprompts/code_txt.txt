@@ -1,0 +1,113 @@
+# Import necessary libraries
+import sqlite3
+import pandas as pd
+
+# Connect to the SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# Query the 'fires' table to extract State, County, and monthly counts of fires per county
+query = """
+SELECT STATE, COUNTY, COUNT(*) AS MONTHLY_FIRE_COUNT
+FROM fires
+GROUP BY STATE, COUNTY
+"""
+
+# Store the results in a DataFrame named 'monthly_fire_counts'
+monthly_fire_counts = pd.read_sql_query(query, cnx)
+# Merge the 'STATE' and 'COUNTY' columns into a single column 'State_County' in the 'monthly_fire_counts' DataFrame
+monthly_fire_counts['State_County'] = monthly_fire_counts['STATE'] + "_" + monthly_fire_counts['COUNTY']
+# Drop the individual 'STATE' and 'COUNTY' columns
+monthly_fire_counts.drop(['STATE', 'COUNTY'], axis=1, inplace=True)
+# Query the database to retrieve the top 10 counties based on total fire duration, fire size, and fire counts
+query_top_counties = """
+SELECT STATE, COUNTY, SUM(FIRE_SIZE) AS TOTAL_FIRE_SIZE, COUNT(*) AS TOTAL_FIRE_COUNT
+FROM fires
+GROUP BY STATE, COUNTY
+ORDER BY TOTAL_FIRE_SIZE DESC, TOTAL_FIRE_COUNT DESC
+LIMIT 10
+"""
+
+# Store the results in a new DataFrame named 'top_counties_stats'
+top_counties_stats = pd.read_sql_query(query_top_counties, cnx)
+from sklearn.preprocessing import StandardScaler
+
+# Initialize the StandardScaler
+scaler = StandardScaler()
+
+# Select the numerical columns for standardization
+numerical_columns = ['TOTAL_FIRE_SIZE', 'TOTAL_FIRE_COUNT']
+
+# Standardize the numerical columns in the 'top_counties_stats' DataFrame
+top_counties_stats[numerical_columns] = scaler.fit_transform(top_counties_stats[numerical_columns])
+from sklearn.decomposition import PCA
+
+# Initialize the PCA model with 2 principal components
+pca = PCA(n_components=2)
+
+# Define the features for PCA analysis
+features = ['TOTAL_FIRE_SIZE', 'TOTAL_FIRE_COUNT']
+
+# Fit the PCA model on the standardized 'top_counties_stats' DataFrame
+pca.fit(top_counties_stats[features])
+
+# Get the variance of the principal components
+variance_explained = pca.explained_variance_ratio_
+
+# Print the variance of the principal components
+print("Variance Explained by Principal Components:")
+for i, var in enumerate(variance_explained):
+    print(f"Principal Component {i+1}: {var:.2f}")
+# Apply Principal Component Analysis (PCA) on the 'top_counties_stats' DataFrame
+from sklearn.decomposition import PCA
+
+# Initialize the PCA model with 2 principal components
+pca = PCA(n_components=2)
+
+# Define the features for PCA analysis
+features = ['TOTAL_FIRE_SIZE', 'TOTAL_FIRE_COUNT']
+
+# Fit the PCA model on the standardized 'top_counties_stats' DataFrame
+pca.fit(top_counties_stats[features])
+
+# Get the variance of the principal components
+variance_explained = pca.explained_variance_ratio_
+
+# Print the variance of the principal components
+print("Variance Explained by Principal Components:")
+for i, var in enumerate(variance_explained):
+    print(f"Principal Component {i+1}: {var:.2f}")
+# Get the principal components from the PCA-transformed data
+principal_components = pca.transform(top_counties_stats[features])
+
+# Get the highest variance principal component
+highest_variance_component = principal_components[:, 0]
+
+# Add the principal component as a new column in 'top_counties_stats'
+top_counties_stats['Principal_Component'] = highest_variance_component
+
+# Identify the county with the highest and lowest values on the highest variance principal component
+highest_fire_prone_county = top_counties_stats.loc[top_counties_stats['Principal_Component'].idxmax()]
+lowest_fire_prone_county = top_counties_stats.loc[top_counties_stats['Principal_Component'].idxmin()]
+
+# Print the county with the highest and lowest values on the highest variance principal component
+print("County with the Highest Fire Proneness:")
+print(highest_fire_prone_county)
+
+print("\nCounty with the Lowest Fire Proneness:")
+print(lowest_fire_prone_county)
+# Format the final results for reporting
+print("Final Results:")
+print("\nMost Fire-Prone County:")
+print(f"County: {highest_fire_prone_county['COUNTY']}, State: {highest_fire_prone_county['STATE']}")
+print(f"Total Fire Size: {highest_fire_prone_county['TOTAL_FIRE_SIZE']}")
+print(f"Total Fire Count: {highest_fire_prone_county['TOTAL_FIRE_COUNT']}")
+print(f"Principal Component Value: {highest_fire_prone_county['Principal_Component']}")
+
+print("\nLeast Fire-Prone County:")
+print(f"County: {lowest_fire_prone_county['COUNTY']}, State: {lowest_fire_prone_county['STATE']}")
+print(f"Total Fire Size: {lowest_fire_prone_county['TOTAL_FIRE_SIZE']}")
+print(f"Total Fire Count: {lowest_fire_prone_county['TOTAL_FIRE_COUNT']}")
+print(f"Principal Component Value: {lowest_fire_prone_county['Principal_Component']}")
+
+print("\nRationale:")
+print("Based on the Principal Component Analysis (PCA), the identified principal component captures the variance in the dataset related to both total fire size and total fire count. The county with the highest value on this component exhibits a combination of significant fire size and frequency, indicating it as the most fire-prone county. Conversely, the county with the lowest value on the principal component reflects lower fire size and frequency, hence classified as the least fire-prone county.")

@@ -1,0 +1,56 @@
+import pandas as pd
+import sqlite3
+
+# Load Data
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+query = "SELECT FIRE_YEAR, DISCOVERY_DOY, DISCOVERY_TIME, STAT_CAUSE_DESCR, FIRE_SIZE, LATITUDE, LONGITUDE, STATE, COUNTY FROM fires"
+df = pd.read_sql_query(query, cnx)
+
+# Clean Data
+df.drop_duplicates(inplace=True)
+df.dropna(inplace=True)
+# Date Conversion
+df["combined_date_dis"] = df["FIRE_YEAR"] * 1000 + df["DISCOVERY_DOY"]
+df["combined_date_dis"] = pd.to_datetime(df["combined_date_dis"], format="%Y%j")
+df = df.set_index("combined_date_dis")
+
+# Extract Relevant Features
+features = df[["FIRE_SIZE", "STAT_CAUSE_DESCR", "LATITUDE", "LONGITUDE", "STATE", "COUNTY"]]
+# Subset Data for Texas
+tx_df = df[df['STATE'] == 'TX']
+
+# Analyze Historical Data
+tx_major_fires = tx_df[tx_df['FIRE_SIZE'] > 1000]  # Considering fires larger than 1000 acres as major wildfires
+tx_fire_trend = tx_major_fires.groupby('FIRE_YEAR').size()
+tx_fire_size_trend = tx_major_fires.groupby('FIRE_YEAR')['FIRE_SIZE'].sum()
+
+# Print Final Answer
+print("Frequency of Major Wildfires in Texas Over the Years:")
+print(tx_fire_trend)
+
+print("\nTotal Size of Major Wildfires in Texas Over the Years:")
+print(tx_fire_size_trend)
+from prophet import Prophet
+
+# Prepare Data for Forecasting
+tx_fire_trend = tx_fire_trend.reset_index()
+tx_fire_trend.columns = ['ds', 'y']
+tx_fire_trend['ds'] = pd.to_datetime(tx_fire_trend['ds'], format='%Y')
+
+# Define and Run Prophet Model
+m = Prophet()
+m.fit(tx_fire_trend)
+
+# Make Future Predictions
+future = m.make_future_dataframe(periods=365)  # Predicting for the next year
+forecast = m.predict(future)
+
+# Print Final Answer
+print(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail())
+# Extract Predictions
+predictions = forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']]
+predictions_next_year = predictions[predictions['ds'].dt.year == predictions['ds'].dt.year.max()]
+
+# Print Final Answer
+print("Likelihood of Major Wildfire in Texas in the Next Year:")
+print(predictions_next_year[['ds', 'yhat', 'yhat_lower', 'yhat_upper']])

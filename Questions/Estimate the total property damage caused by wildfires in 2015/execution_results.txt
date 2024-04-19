@@ -1,0 +1,11 @@
+
+
+
+Total Property Damage Caused by Wildfires in 2015: $ 44032944853112.5
+
+Total Property Damage Caused by Wildfires in 2015: $ 44032944853112.5
+The total property damage caused by wildfires in 2015 amounts to $ 44032944853112.5
+This estimation is based on the size class and actual size of each wildfire.
+The property damage values were scaled according to predefined class-property damage mapping.
+Understanding the total property damage helps in assessing the impact of wildfires in 2015.
+

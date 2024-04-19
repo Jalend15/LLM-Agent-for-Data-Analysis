@@ -1,0 +1,320 @@
+# Import the necessary libraries
+import sqlite3
+import pandas as pd
+
+# Connect to the SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# Query the database to extract relevant columns related to fire containment
+query = "SELECT DISCOVERY_DATE, CONT_DATE, CONT_TIME, FIRE_SIZE, FIRE_SIZE_CLASS, STAT_CAUSE_DESCR, OWNER_DESCR, STATE, COUNTY FROM fires"
+df = pd.read_sql_query(query, cnx)
+
+# Display the first few rows of the extracted data
+print(df.head())
+# Convert 'DISCOVERY_DATE' and 'CONT_DATE' to datetime format
+df['DISCOVERY_DATE'] = pd.to_datetime(df['DISCOVERY_DATE'])
+df['CONT_DATE'] = pd.to_datetime(df['CONT_DATE'])
+
+# Calculate the duration of each fire
+df['FIRE_DURATION'] = df['CONT_DATE'] - df['DISCOVERY_DATE']
+
+# Display the first few rows of the updated dataframe with fire duration
+print(df.head())
+from sklearn.preprocessing import LabelEncoder
+
+# Initialize the LabelEncoder
+label_encoder = LabelEncoder()
+
+# Encode categorical columns: 'STAT_CAUSE_DESCR', 'OWNER_DESCR', 'STATE', and 'COUNTY'
+df['STAT_CAUSE_DESCR'] = label_encoder.fit_transform(df['STAT_CAUSE_DESCR'])
+df['OWNER_DESCR'] = label_encoder.fit_transform(df['OWNER_DESCR'])
+df['STATE'] = label_encoder.fit_transform(df['STATE'])
+df['COUNTY'] = label_encoder.fit_transform(df['COUNTY'])
+
+# Display the first few rows of the dataframe with encoded categorical columns
+print(df.head())
+# Drop irrelevant or redundant columns from the dataframe
+df = df.drop(columns=['DISCOVERY_DATE', 'CONT_DATE', 'CONT_TIME'])
+
+# Display the first few rows of the updated dataframe after dropping columns
+print(df.head())
+from sklearn.preprocessing import StandardScaler
+
+# Initialize the StandardScaler
+scaler = StandardScaler()
+
+# Select numerical columns for normalization: 'FIRE_SIZE', 'FIRE_DURATION'
+numerical_cols = ['FIRE_SIZE', 'FIRE_DURATION']
+
+# Normalize numerical columns using the StandardScaler
+df[numerical_cols] = scaler.fit_transform(df[numerical_cols])
+
+# Display the first few rows of the dataframe with normalized numerical columns
+print(df.head())
+# Import the necessary libraries
+import sqlite3
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+# Connect to the SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# Query the database to extract relevant columns related to fire containment
+query = "SELECT DISCOVERY_DATE, CONT_DATE, CONT_TIME, FIRE_SIZE, FIRE_SIZE_CLASS, STAT_CAUSE_DESCR, OWNER_DESCR, STATE, COUNTY FROM fires"
+df = pd.read_sql_query(query, cnx)
+
+# Convert 'DISCOVERY_DATE' and 'CONT_DATE' to datetime format
+df['DISCOVERY_DATE'] = pd.to_datetime(df['DISCOVERY_DATE'])
+df['CONT_DATE'] = pd.to_datetime(df['CONT_DATE'])
+
+# Calculate the duration of each fire
+df['FIRE_DURATION'] = (df['CONT_DATE'] - df['DISCOVERY_DATE']).dt.days
+
+# Select numerical columns for normalization: 'FIRE_SIZE', 'FIRE_DURATION'
+numerical_cols = ['FIRE_SIZE', 'FIRE_DURATION']
+
+# Initialize the StandardScaler
+scaler = StandardScaler()
+
+# Normalize numerical columns using the StandardScaler
+df[numerical_cols] = scaler.fit_transform(df[numerical_cols])
+
+# Display the first few rows of the updated dataframe with fire duration and normalized numerical columns
+print(df.head())
+# Import the necessary libraries for classifier training
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+
+# Define features (X) and target variable (y) for the classifier
+X = df.drop(columns=['FIRE_DURATION'])  # Features
+y = df['FIRE_DURATION']  # Target variable
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize the RandomForestClassifier
+rf_model = RandomForestClassifier()
+
+# Train the RandomForestClassifier on the training data
+rf_model.fit(X_train, y_train)
+
+# Make predictions on the test data
+y_pred = rf_model.predict(X_test)
+
+# Generate a classification report to evaluate the classifier
+print(classification_report(y_test, y_pred))
+# Import the necessary libraries
+import sqlite3
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+# Connect to the SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# Query the database to extract relevant columns related to fire containment
+query = "SELECT DISCOVERY_DATE, CONT_DATE, CONT_TIME, FIRE_SIZE, FIRE_SIZE_CLASS, STAT_CAUSE_DESCR, OWNER_DESCR, STATE, COUNTY FROM fires"
+df = pd.read_sql_query(query, cnx)
+
+# Convert 'DISCOVERY_DATE' and 'CONT_DATE' to datetime format
+df['DISCOVERY_DATE'] = pd.to_datetime(df['DISCOVERY_DATE'])
+df['CONT_DATE'] = pd.to_datetime(df['CONT_DATE'])
+
+# Calculate the duration of each fire in days
+df['FIRE_DURATION'] = (df['CONT_DATE'] - df['DISCOVERY_DATE']).dt.days
+
+# Select numerical columns for normalization: 'FIRE_SIZE', 'FIRE_DURATION'
+numerical_cols = ['FIRE_SIZE', 'FIRE_DURATION']
+
+# Initialize the StandardScaler
+scaler = StandardScaler()
+
+# Normalize numerical columns using the StandardScaler
+df[numerical_cols] = scaler.fit_transform(df[numerical_cols])
+
+# Display the first few rows of the updated dataframe with fire duration and normalized numerical columns
+print(df.head())
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+
+# Split the data into features X and target y
+X = df.drop(columns=['FIRE_SIZE_CLASS'])
+y = df['FIRE_SIZE_CLASS']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize the RandomForestClassifier
+rf_model = RandomForestClassifier()
+
+# Fit the model on the training data
+rf_model.fit(X_train, y_train)
+
+# Make predictions on the training data
+y_pred = rf_model.predict(X_train)
+
+# Generate the classification report
+class_report = classification_report(y_train, y_pred)
+
+# Print the classification report
+print(class_report)
+# Import the necessary libraries
+import sqlite3
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+# Connect to the SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# Query the database to extract relevant columns related to fire containment
+query = "SELECT DISCOVERY_DATE, CONT_DATE, CONT_TIME, FIRE_SIZE, FIRE_SIZE_CLASS, STAT_CAUSE_DESCR, OWNER_DESCR, STATE, COUNTY FROM fires"
+df = pd.read_sql_query(query, cnx)
+
+# Convert 'DISCOVERY_DATE' and 'CONT_DATE' to datetime format
+df['DISCOVERY_DATE'] = pd.to_datetime(df['DISCOVERY_DATE'])
+df['CONT_DATE'] = pd.to_datetime(df['CONT_DATE'])
+
+# Calculate the duration of each fire in days
+df['FIRE_DURATION'] = (df['CONT_DATE'] - df['DISCOVERY_DATE']).dt.days
+
+# Select numerical columns for normalization: 'FIRE_SIZE', 'FIRE_DURATION'
+numerical_cols = ['FIRE_SIZE', 'FIRE_DURATION']
+
+# Initialize the StandardScaler
+scaler = StandardScaler()
+
+# Normalize numerical columns using the StandardScaler
+df[numerical_cols] = scaler.fit_transform(df[numerical_cols])
+
+# Display the first few rows of the updated dataframe with fire duration and normalized numerical columns
+print(df.head())
+# Import the necessary libraries
+import sqlite3
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+# Connect to the SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# Query the database to extract relevant columns related to fire containment
+query = "SELECT DISCOVERY_DATE, CONT_DATE, CONT_TIME, FIRE_SIZE, FIRE_SIZE_CLASS, STAT_CAUSE_DESCR, OWNER_DESCR, STATE, COUNTY FROM fires"
+df = pd.read_sql_query(query, cnx)
+
+# Convert 'DISCOVERY_DATE' and 'CONT_DATE' to datetime format
+df['DISCOVERY_DATE'] = pd.to_datetime(df['DISCOVERY_DATE'])
+df['CONT_DATE'] = pd.to_datetime(df['CONT_DATE'])
+
+# Calculate the duration of each fire in days
+df['FIRE_DURATION'] = (df['CONT_DATE'] - df['DISCOVERY_DATE']).dt.days
+
+# Select numerical columns for normalization: 'FIRE_SIZE', 'FIRE_DURATION'
+numerical_cols = ['FIRE_SIZE', 'FIRE_DURATION']
+
+# Initialize the StandardScaler
+scaler = StandardScaler()
+
+# Normalize numerical columns using the StandardScaler
+df[numerical_cols] = scaler.fit_transform(df[numerical_cols])
+
+# Display the first few rows of the updated dataframe with fire duration and normalized numerical columns
+print(df.head())
+
+# Inverse transform to decode encoded categorical columns: 'STAT_CAUSE_DESCR', 'OWNER_DESCR', 'STATE', 'COUNTY'
+df['STAT_CAUSE_DESCR'] = label_encoder.inverse_transform(df['STAT_CAUSE_DESCR'])
+df['OWNER_DESCR'] = label_encoder.inverse_transform(df['OWNER_DESCR'])
+df['STATE'] = label_encoder.inverse_transform(df['STATE'])
+df['COUNTY'] = label_encoder.inverse_transform(df['COUNTY'])
+
+# Display the first few rows of the dataframe with decoded categorical columns
+print(df.head())
+# Import the necessary libraries
+import sqlite3
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+# Connect to the SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# Query the database to extract relevant columns related to fire containment
+query = "SELECT DISCOVERY_DATE, CONT_DATE, CONT_TIME, FIRE_SIZE, FIRE_SIZE_CLASS, STAT_CAUSE_DESCR, OWNER_DESCR, STATE, COUNTY FROM fires"
+df = pd.read_sql_query(query, cnx)
+
+# Convert 'DISCOVERY_DATE' and 'CONT_DATE' to datetime format
+df['DISCOVERY_DATE'] = pd.to_datetime(df['DISCOVERY_DATE'])
+df['CONT_DATE'] = pd.to_datetime(df['CONT_DATE'])
+
+# Calculate the duration of each fire in days
+df['FIRE_DURATION'] = (df['CONT_DATE'] - df['DISCOVERY_DATE']).dt.days
+
+# Select numerical columns for normalization: 'FIRE_SIZE', 'FIRE_DURATION'
+numerical_cols = ['FIRE_SIZE', 'FIRE_DURATION']
+
+# Initialize the StandardScaler
+scaler = StandardScaler()
+
+# Normalize numerical columns using the StandardScaler
+df[numerical_cols] = scaler.fit_transform(df[numerical_cols])
+
+# Display the first few rows of the updated dataframe with fire duration and normalized numerical columns
+print(df.head())
+# Import the necessary libraries
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+
+# Define the features and target variable
+X = df.drop(columns=['CONT_DATE'])  # Features
+y = df['CONT_DATE']  # Target variable
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize and train the RandomForestClassifier
+rf_model = RandomForestClassifier()
+rf_model.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = rf_model.predict(X_test)
+
+# Evaluate the model
+print(classification_report(y_test, y_pred))
+
+# Obtain feature importances from the trained model
+feature_importances = rf_model.feature_importances_
+feature_names = X.columns
+
+# Create a dataframe to display the feature importances
+feature_importance_df = pd.DataFrame({'Feature': feature_names, 'Importance': feature_importances})
+print("Most Predictive Factors of Fire Containment Times:")
+print(feature_importance_df.sort_values(by='Importance', ascending=False))
+# Import the necessary libraries
+import sqlite3
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+# Connect to the SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# Query the database to extract relevant columns related to fire containment
+query = "SELECT DISCOVERY_DATE, CONT_DATE, CONT_TIME, FIRE_SIZE, FIRE_SIZE_CLASS, STAT_CAUSE_DESCR, OWNER_DESCR, STATE, COUNTY FROM fires"
+df = pd.read_sql_query(query, cnx)
+
+# Convert 'DISCOVERY_DATE' and 'CONT_DATE' to datetime format
+df['DISCOVERY_DATE'] = pd.to_datetime(df['DISCOVERY_DATE'])
+df['CONT_DATE'] = pd.to_datetime(df['CONT_DATE'])
+
+# Calculate the duration of each fire in days
+df['FIRE_DURATION'] = (df['CONT_DATE'] - df['DISCOVERY_DATE']).dt.days
+
+# Select numerical columns for normalization: 'FIRE_SIZE', 'FIRE_DURATION'
+numerical_cols = ['FIRE_SIZE', 'FIRE_DURATION']
+
+# Initialize the StandardScaler
+scaler = StandardScaler()
+
+# Normalize numerical columns using the StandardScaler
+df[numerical_cols] = scaler.fit_transform(df[numerical_cols])
+
+# Display the first few rows of the updated dataframe with fire duration and normalized numerical columns
+print(df.head())

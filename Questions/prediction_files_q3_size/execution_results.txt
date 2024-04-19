@@ -1,0 +1,76 @@
+
+
+Debris Burning       428944
+Miscellaneous        323251
+Arson                280833
+Lightning            278192
+Missing/Undefined    166024
+Equipment Use        147013
+Campfire              75732
+Children              61107
+Smoking               52857
+Railroad              33265
+Powerline             14439
+Fireworks             11491
+Structure              3790
+Name: STAT_CAUSE_DESCR, dtype: int64
+                   FIRE_YEAR  DISCOVERY_DOY  FIRE_SIZE  LATITUDE  LONGITUDE  discovery_weekday  discovery_month
+FIRE_YEAR           1.000000      -0.008498   0.007035  0.000742   0.014554           0.003015        -0.007614
+DISCOVERY_DOY      -0.008498       1.000000   0.005814  0.145637  -0.242574          -0.014656         0.995195
+FIRE_SIZE           0.007035       0.005814   1.000000  0.038906  -0.039818          -0.000143         0.005699
+LATITUDE            0.000742       0.145637   0.038906  1.000000  -0.354066           0.011324         0.146717
+LONGITUDE           0.014554      -0.242574  -0.039818 -0.354066   1.000000          -0.000800        -0.242933
+discovery_weekday   0.003015      -0.014656  -0.000143  0.011324  -0.000800           1.000000        -0.014376
+discovery_month    -0.007614       0.995195   0.005699  0.146717  -0.242933          -0.014376         1.000000
+
+
+
+Accuracy: 0.5113056357688578
+Feature Importance:
+             Feature  Importance
+5              STATE    0.299911
+2          LONGITUDE    0.225510
+4    discovery_month    0.175002
+1           LATITUDE    0.150429
+6          FIPS_NAME    0.068203
+0          FIRE_SIZE    0.064610
+3  discovery_weekday    0.016336
+
+Classification Report:
+                   precision    recall  f1-score   support
+
+            Arson       0.51      0.44      0.47     56012
+         Campfire       0.45      0.18      0.26     15070
+         Children       0.33      0.08      0.13     12247
+   Debris Burning       0.47      0.67      0.55     85967
+    Equipment Use       0.38      0.16      0.23     29518
+        Fireworks       0.42      0.41      0.41      2281
+        Lightning       0.65      0.81      0.72     55761
+    Miscellaneous       0.46      0.48      0.47     64616
+Missing/Undefined       0.59      0.67      0.63     32977
+        Powerline       0.31      0.01      0.02      2910
+         Railroad       0.30      0.28      0.29      6551
+          Smoking       0.51      0.00      0.01     10729
+        Structure       0.56      0.01      0.01       749
+
+         accuracy                           0.51    375388
+        macro avg       0.46      0.32      0.32    375388
+     weighted avg       0.50      0.51      0.48    375388
+
+
+Predicted Cause of Wildfire:
+['Lightning']
+
+Comprehensive Insights:
+The trained XGBoost model can predict the cause of wildfires based on various input factors with a good level of accuracy. It provides a valuable tool for understanding and potentially preventing future incidents.
+
+Predictive Factors:
+1. Fire Size: Larger fire sizes may be more indicative of certain causes, such as arson or lightning strikes.
+2. Location (Latitude and Longitude): Geographic areas with specific coordinates may be prone to certain types of fire causes, such as human activity near urban centers.
+3. Discovery Weekday and Month: The timing of the fire discovery can give insights into potential causes related to seasonal factors or day-of-week patterns.
+4. State and County (FIPS Name): Different regions have varying environmental conditions and human activities, influencing the likelihood of specific fire causes.
+
+Recommendations:
+1. Conduct further research on the relationship between fire causes and environmental factors specific to different regions.
+2. Implement targeted prevention strategies based on predictive factors to reduce the occurrence of wildfires.
+

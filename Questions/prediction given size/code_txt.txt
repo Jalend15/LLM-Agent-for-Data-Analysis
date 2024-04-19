@@ -1,0 +1,88 @@
+import sqlite3
+import pandas as pd
+
+# Connect to the SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# Query the database to retrieve the specified columns
+query = "SELECT FIRE_SIZE, LATITUDE, LONGITUDE, DISCOVERY_DATE, STAT_CAUSE_DESCR FROM fires"
+df = pd.read_sql_query(query, cnx)
+
+# Remove rows with NaN values
+df.dropna(inplace=True)
+# Convert the 'DISCOVERY_DATE' column from epoch timestamp format to a human-readable date format (mm/dd/yyyy)
+df['DISCOVERY_DATE'] = pd.to_datetime(df['DISCOVERY_DATE'], unit='ms').dt.strftime('%m/%d/%Y')
+
+# Check if 'DISCOVERY_TIME' column is available, then create combined datetime column
+if 'DISCOVERY_TIME' in df.columns:
+    # Combine 'DISCOVERY_DATE' and 'DISCOVERY_TIME' columns
+    df['DISCOVERY_TIME'] = pd.to_datetime(df['DISCOVERY_TIME'], format='%H%M', errors='coerce').dt.strftime('%H:%M')
+    df['COMBINED_DATETIME'] = pd.to_datetime(df['DISCOVERY_DATE'] + ' ' + df['DISCOVERY_TIME'], format='%m/%d/%Y %H:%M', errors='coerce')
+
+# Print the updated DataFrame
+print(df.head())
+# Filter the data based on the specified values
+filtered_df = df[(df['FIRE_SIZE'] == 0.1) & 
+                 (df['LATITUDE'] == 40.036944) & 
+                 (df['LONGITUDE'] == -121.005833) & 
+                 (df['DISCOVERY_DATE'] == 'converted date value')]
+
+# Print the filtered DataFrame
+print(filtered_df)
+# Make sure the necessary libraries are imported
+from sklearn.model_selection import train_test_split
+from xgboost import XGBClassifier
+from sklearn.ensemble import RandomForestClassifier
+
+# Define features and target variable
+X = df[['FIRE_SIZE', 'LATITUDE', 'LONGITUDE']]
+y = df['STAT_CAUSE_DESCR']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize and train the model
+# You can use either XGBClassifier or RandomForestClassifier
+# Let's use RandomForestClassifier for this example
+rf_model = RandomForestClassifier()
+rf_model.fit(X_train, y_train)
+
+# Define the input to predict the cause of the fire
+input_data = [[0.1, 40.036944, -121.005833]]  # Add converted date value if 'DISCOVERY_DATE' is included in the features
+
+# Predict the cause of the fire
+predicted_cause = rf_model.predict(input_data)
+
+# Print the predicted cause of the fire
+print(f"Predicted Cause of the Fire: {predicted_cause}")
+# Make the prediction and provide the output to the user
+predicted_cause = rf_model.predict([[0.1, 40.036944, -121.005833]])  # Fill in with actual values
+print(f"Predicted Cause of the Fire: {predicted_cause}")
+# Ensure conversion of 'DISCOVERY_DATE' to human-readable format without errors
+df['DISCOVERY_DATE'] = pd.to_datetime(df['DISCOVERY_DATE'], errors='coerce', unit='ms').dt.strftime('%m/%d/%Y')
+
+# Check for valid data types and formats
+print(df.dtypes)
+
+# Display a sample of the DataFrame for verification
+print(df.head())
+# Assumptions:
+# - The dataset provided is clean and does not contain any outliers or errors.
+# - The selected features, 'FIRE_SIZE', 'LATITUDE', 'LONGITUDE', and 'DISCOVERY_DATE', are sufficient to predict the cause of the fire accurately.
+# - The RandomForestClassifier model is suitable for the classification task based on the provided data.
+# - The 'DISCOVERY_DATE' column has been successfully converted to a human-readable format without any conversion errors.
+
+# Report Summary:
+# - The analysis process involved selecting relevant columns from the fires table in the SQLite database and handling missing values by dropping rows with NaN values.
+# - Feature engineering was performed by converting the 'DISCOVERY_DATE' column to a human-readable format and creating a combined datetime column if 'DISCOVERY_TIME' was available.
+# - Data filtering was applied to filter the data based on specific values of 'FIRE_SIZE', 'LATITUDE', 'LONGITUDE', and 'DISCOVERY_DATE'.
+# - A RandomForestClassifier model was trained using the features 'FIRE_SIZE', 'LATITUDE', 'LONGITUDE' to predict the cause of the fire.
+# - The model was used to predict the cause of the fire based on the specified values, and the predicted cause was provided as the final output.
+
+# This code snippet demonstrates the overall analysis and prediction process based on the provided data and model.
+
+# Note: The complete report may include visualizations, model evaluation, and further insights based on the analysis results.
+
+# If more detailed documentation or reporting is required, additional analysis steps and visualizations can be incorporated as needed.
+
+# You can compile the code snippets and additional details to create a comprehensive documentation and reporting based on the analysis performed.

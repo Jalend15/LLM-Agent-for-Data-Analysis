@@ -1,0 +1,103 @@
+# Import the necessary libraries
+import sqlite3
+import pandas as pd
+
+# Establish a connection to the SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# Write an SQL query to extract the required columns
+query = '''
+SELECT FIRE_SIZE, LATITUDE, LONGITUDE, DISCOVERY_DATE, STAT_CAUSE_DESCR
+FROM fires
+'''
+
+# Execute the query and store the results in a DataFrame named 'fire_data'
+fire_data = pd.read_sql_query(query, cnx)
+# Convert the 'DISCOVERY_DATE' column to the required format
+fire_data['DISCOVERY_DATE'] = pd.to_datetime(fire_data['DISCOVERY_DATE']).dt.strftime('%m/%d/%Y')
+
+# Encode the categorical column 'STAT_CAUSE_DESCR' using Label Encoder
+from sklearn.preprocessing import LabelEncoder
+
+# Initialize the Label Encoder
+label_encoder = LabelEncoder()
+
+# Fit and transform the 'STAT_CAUSE_DESCR' column
+fire_data['STAT_CAUSE_DESCR_ENCODED'] = label_encoder.fit_transform(fire_data['STAT_CAUSE_DESCR'])
+# Separate the independent variables (features) and target variable
+X = fire_data[['FIRE_SIZE', 'LATITUDE', 'LONGITUDE', 'DISCOVERY_DATE']]
+y = fire_data['STAT_CAUSE_DESCR_ENCODED']
+ire_data['FIRE_SIZE'].astype(float)
+fire_data['LATITUDE'] = fire_data['LATITUDE'].astype(float)
+fire_data['LONGITUDE'] = fire_data['LONGITUDE'].astype(float)
+fire_data['DISCOVERY_DATE'] = fire_data['DISCOVERY_DATE'].astype(int)
+
+# Print the updated DataFrame to verify the encoding and datatype conversion
+print(fire_data.head())
+# Split the 'DISCOVERY_DATE' column into week, month, and day for integer processing
+fire_data['DISCOVERY_WEEK'] = pd.to_datetime(fire_data['DISCOVERY_DATE']).dt.week
+fire_data['DISCOVERY_MONTH'] = pd.to_datetime(fire_data['DISCOVERY_DATE']).dt.month
+fire_data['DISCOVERY_DAY'] = pd.to_datetime(fire_data['DISCOVERY_DATE']).dt.day
+
+# Convert the new columns to integer format for processing
+fire_data['DISCOVERY_WEEK'] = fire_data['DISCOVERY_WEEK'].astype(int)
+fire_data['DISCOVERY_MONTH'] = fire_data['DISCOVERY_MONTH'].astype(int)
+fire_data['DISCOVERY_DAY'] = fire_data['DISCOVERY_DAY'].astype(int)
+
+# Print the updated DataFrame to verify the splitting
+print(fire_data.head())
+# Import the required libraries
+from xgboost import XGBClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+
+# Define the features (X) and target (y) variables
+X = fire_data[['FIRE_SIZE', 'LATITUDE', 'LONGITUDE', 'DISCOVERY_DATE']]
+y = fire_data['STAT_CAUSE_DESCR']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize the XGBClassifier
+xgb_model = XGBClassifier()
+
+# Train the model on the training data
+xgb_model.fit(X_train, y_train)
+
+# Make predictions on the test data
+y_pred = xgb_model.predict(X_test)
+
+# Generate a classification report to evaluate the model performance
+print(classification_report(y_test, y_pred))
+# Import the necessary libraries
+from sklearn.metrics import classification_report
+
+# Generate a classification report to evaluate the performance of the XGBClassifier on the test data
+classification_report(y_test, y_pred)
+# Use the LabelEncoder to inverse transform the numerical values back to their original categorical form
+decoded_values = label_encoder.inverse_transform(y_pred)
+
+# Print the decoded values for better interpretation
+print(decoded_values)
+# Define the input features for prediction
+input_features = [[fire_size_value, latitude_value, longitude_value, discovery_date_value]]
+
+# Make predictions using the trained XGBClassifier model
+predictions = xgb_model.predict(input_features)
+
+# Use the LabelEncoder to inverse transform the numerical predictions back to their original categorical form
+decoded_predictions = label_encoder.inverse_transform(predictions)
+
+# Print the final predictions of the cause of a wildfire based on the input features
+print("Predicted Cause of Wildfire:", decoded_predictions)
+# Define the input features for prediction using data from the 'fire_data' DataFrame
+input_features = fire_data[['FIRE_SIZE', 'LATITUDE', 'LONGITUDE', 'DISCOVERY_DATE']]
+
+# Make predictions using the trained XGBClassifier model
+predictions = xgb_model.predict(input_features)
+
+# Use the LabelEncoder to inverse transform the numerical predictions back to their original categorical form
+decoded_predictions = label_encoder.inverse_transform(predictions)
+
+# Print the final predictions of the cause of a wildfire based on the input features
+print("Predicted Cause of Wildfire:", decoded_predictions)

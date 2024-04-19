@@ -1,0 +1,398 @@
+# Step 1: Plan generation
+prompt= '''<s> [INST]
+You are a planning module specifically designed for data analysis tasks involving SQLite databases. You will receive natural language queries and must develop a clear, step-by-step plan for data analysis, directing the code generator on how to execute each step effectively. The plan should outline necessary SQL queries, data preprocessing steps, analytical methods, and final reporting formats, specifying all variable names and any new DataFrames or structures needed.
+
+You will interact with a code generator or tool user to extract insights from a SQLite database. Ensure each instruction is precise and clear to facilitate accurate code generation.
+
+TASK: Draft a comprehensive, step-by-step plan to perform data analysis on the specified SQLite table named 'fires'. This table contains extensive data on wildfires. The plan should outline the necessary SQL queries, data preprocessing steps, analytical methods, and final reporting formats. Mention all variable names clearly and specify any new DataFrames or structures needed. Do not assume functions and keep changing variable names.
+
+DATABASE DETAILS:
+- Database: SQLite
+- Table Name: fires
+
+MEMORY:
+Context: The 'fires' table contains a comprehensive spatial database of wildfires that occurred in the United States from 1992 to 2015. This data supports national Fire Program Analysis (FPA) systems. The records, sourced from federal, state, and local fire organizations, include essential elements such as discovery date, final fire size, and point locations precise to at least the Public Land Survey System (PLSS) section (1-square mile grid). The data conforms to standards set by the National Wildfire Coordinating Group (NWCG) and includes error-checking and redundancy removal. This data publication, known as the Fire Program Analysis fire-occurrence database (FPA FOD), comprises 1.88 million geo-referenced wildfire records, representing 140 million acres burned over a 24-year period.
+
+Column Information:
+'''
+prompt+= col_txt
+prompt+='''
+TOOLS
+- Print Final Answer: This is not a function. Treat this a plan termination. Just print the results. Use if answer to User's question can be given with MEMORY and data we have. Use this after thorough data analysis
+- Query_Database: Write only one SQL Query to query the Database. This can only execute one query at a time
+- PCA_Analysis: Find variance of the principal components
+- Prophet_module: Implement prophet module to find the trends and trend change points. (from prophet import Prophet)
+- Remove_duplicates: Remove duplicate rows
+- convert datetime to required format - from 223453464 to mmddyyyy
+- extract the necessary metrics and store in dataframe
+- Classifier - XGBClassifier (before mentioning the classifier, convert all the columns into the correct datatype to avoid errors like- Error during execution: could not convert string to float: '01/01/1970' )
+- Label Encoder - encode when needed and decode when predicting using inverse transform or decoder
+- RandomForestClassifier - use variable name - rf_model
+- Classification_Report: Generate reports on classifier performance.
+- Inverse transform
+- Data_Encoding: Use Label Encoders for categorical data and handle inverse transformations.
+- Split date format into week, month, day - for integer processing
+- replace null type attributes with a suitable data type and value
+- Pandas - import pandas as pd
+
+
+
+
+Remember, your goal is to provide clear, executable instructions that a code generator can follow to generate code. Be very clear and define variables whenever needed. Use in-context example as a sample.
+
+In-context example:
+User: What counties are the most and least fire-prone? \n
+Assistant: 
+1. Execute an SQL query to extract state, county, monthly counts of fires per county. Store results in 'monthly_fire_counts'.
+2. Merge state and county names into a single 'State_County' column in 'monthly_fire_counts'.
+3. Use SQL to retrieve the top 10 counties based on total fire duration, size, and counts. Store these in 'top_counties_stats'.
+4. Standardize the metrics in 'top_counties_stats' for comparison.
+5. Apply PCA on 'top_counties_stats' to determine the principal components.
+6. Analyze the variance of these components to identify the most significant ones.
+7. List the counties with the highest and lowest values on the principal component that shows the highest variance, indicating most and least fire-prone areas.
+8. Format the final results for reporting, detailing the findings on fire-prone counties.
+[/INST]
+
+User:
+'''
+query = 'What counties are the most and least fire-prone?'
+# query = 'Have wildfires become more or less frequent over time?'
+# query = 'Given the size, location and date, Predict the cause of a fire wildfire.'
+# query = 'What is this dataset about?'
+# query = 'What questions can I ask?'
+# query = 'What year had the highest number of wildfires?'
+# query = 'Estimate the total property damage caused by wildfires in 2015.'
+# query = 'What factors are most predictive of fire containment times?' #not working
+# query = 'Based on historical data, predict the likelihood of a major wildfire in Texas in the next year.'
+prompt+= query
+plan_txt = llm_generate_plan(prompt)
+print(plan_txt)
+# print("Generated Plan Steps:")
+#TASK: Draft a comprehensive, step-by-step plan to perform data analysis on a specified table. Mention the variable names clearly and the new dataframes needed for the code generator to understand.
+
+
+# Assistant:
+# 1. Extract monthly counts of fires for each county using SQL:
+#    - `monthly_fires_df = QUERY('SELECT state, county, COUNT(*) AS monthly_fire_count, strftime('%m', discovery_date) AS month FROM fires GROUP BY state, county, month');`
+# 2. Combine state and county into a unique identifier:
+#    - `monthly_fires_df['county_identifier'] = monthly_fires_df['state'] + ', ' + monthly_fires_df['county'];`
+# 3. Retrieve and rank the top 10 counties by total fire duration, size, and counts:
+#    - `top_duration_df = QUERY('SELECT county_identifier, SUM(duration) AS total_duration FROM monthly_fires_df GROUP BY county_identifier ORDER BY total_duration DESC LIMIT 10');`
+#    - Similar queries for fire size and counts.
+# 4. Combine these metrics into a single DataFrame and standardize the values:
+#    - `combined_metrics_df = MERGE(top_duration_df, top_size_df, top_counts_df);`
+#    - `standardized_metrics_df = STANDARDIZE(combined_metrics_df);`
+# 5. Implement PCA on the standardized data and identify the principal component with the highest variance.
+#    - `pca_results = PCA_ANALYSIS(standardized_metrics_df);`
+# 6. Output the counties from the component showing the highest variance as the most and least fire-prone.
+#    - `final_result = IDENTIFY_EXTREMES(pca_results);`
+#    - `PRINT('Most and Least Fire-Prone Counties: ', final_result);`
+# Assistant: Extract monthly count of fires for each county. \n 
+# Combine State and Counties \n
+# Retrieve the top 10 counties in terms of total fire duration. \n
+# Retrieve the top 10 counties in terms of total fire size. \n
+# Retrieve the top 10 counties in terms of fire counts. \n
+# Combine the metrics total fire duration, total fire size,fire counts into the same data frame and standardize the values \n
+# Implement PCA and calculate the variances of the principal components. \n
+# Retrieve the component that has the highest varience. \n
+# Print the counties that are the least and the most fire-prone. \n
+
+'''
+1. Extract monthly count of fires for each county. \n 
+2. Combine State and Counties \n
+3. Retrieve the top 10 counties in terms of total fire duration. \n
+4. Retrieve the top 10 counties in terms of total fire size. \n
+5. Retrieve the top 10 counties in terms of fire counts. \n
+6. Combine the metrics total fire duration, total fire size,fire counts into the same data frame and standardize the values \n
+7. Implement PCA and calculate the variances of the principal components. \n
+8. Retrieve the component that has the highest varience. \n
+9. Print the counties that are the least and the most fire-prone. \n
+
+'''
+
+import openai
+import yaml
+local_environment = {'df': df_interest}
+
+def load_plugin_schema(plugin_name):
+    """
+    Loads the plugin schema from a YAML file.
+    
+    Args:
+        plugin_name (str): The name of the plugin.
+        
+    Returns:
+        dict: The plugin schema including name, arguments, and metadata.
+    """
+    with open(f"{plugin_name}.yaml", 'r') as file:
+        plugin_schema = yaml.safe_load(file)
+    return plugin_schema
+
+def extract_python_code(text):
+    """
+    Extract Python code blocks from the provided text string.
+
+    Args:
+        text (str): A string containing mixed content including Python code blocks.
+
+    Returns:
+        list of str: A list containing the extracted Python code blocks.
+    """
+    # Split the text by triple backticks to find potential code blocks
+    parts = text.split('```python')
+    code_blocks = []
+
+    # Iterate over parts that come after `python` indicated by backticks
+    for part in parts[1:]:  # skip the first split as it won't contain code
+        # Find the first occurrence of triple backticks which marks the end of the code block
+        end_idx = part.find('```')
+        if end_idx != -1:
+            # Extract the code block up to the ending backticks
+            code_blocks.append(part[:end_idx].strip())
+
+    return code_blocks
+
+def regenerate_code_with_reflection(original_code, error_message,code_prompt):
+    """
+    Use LLM to regenerate the code based on the error encountered.
+    """
+    prompt = f"Correct this Python code which caused an error:\nError: {error_message}\nCode: {original_code}\n# Use {code_prompt} for reference to correct it"
+    
+    prompt = (
+        f"### Error Correction Task\n"
+        f"## Context:\n"
+        f"- An error occurred during the execution of this Python code, which is part of a larger project involving data analysis.\n"
+        f"- Below is the erroneous code along with the error message and the code context from the broader project.\n"
+        f"- Your task is to correct the code to resolve the error and ensure it aligns with the project's objectives and coding standards.\n\n"
+        f"## Error Details:\n"
+        f"- Error Message: {error_message}\n\n"
+        f"## Original Code Causing the Error:\n"
+        f"```python\n"
+        f"{original_code}\n"
+        f"```\n\n"
+        f"## Project Code Context (Reference):\n"
+        f"```python\n"
+        f"{code_prompt}\n"
+        f"```\n\n"
+        f"## Instructions:\n"
+        f"- Correct the original code to eliminate the error.\n"
+        f"- Ensure the corrected code integrates seamlessly with the provided project code context.\n"
+        f"- Maintain consistency with the coding practices and standards used in the project.\n"
+        f"- Provide explanations for the changes made to help understand the correction process.\n"
+        f"- Make sure the type matches correctly for the classifiers"
+        f"- Import the correct/required libraries"
+        f"- Where possible, convert data types explicitly to compatible types before operation. For example, convert timedelta to numeric types (such as total seconds) if the operation requires numeric computation."
+        f"- For variables like date, create new columns to support multiple datatypes like datetimelike, int, and so on"
+        f"- For variable type errors, try to clean the data before predictive modelling"
+        f"- Check the existence of the columns before dropping them"
+        f"- Specify datetime formats clearly - for example format='%m%d%Y for better processing"
+        f"<INST> Generate only python code <\INST>"
+    )
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content":prompt},
+        ]
+    )
+    corrected_code = response['choices'][0]['message']['content']
+#     print("Corrected_code")
+#     print(corrected_code)
+    return corrected_code
+def run_code_with_custom_globals(generated_code):
+    """
+    Executes the provided Python code using custom globals and captures the output.
+    
+    Args:
+        generated_code (str): Python code to be executed.
+        local_environment (dict): Custom global variables for the execution environment.
+    
+    Returns:
+        str: Output from executing the code.
+    """
+    old_stdout = sys.stdout
+    redirected_output = sys.stdout = io.StringIO()
+
+    try:
+        exec(generated_code, local_environment)
+    except Exception as e:
+        print(f"Error during execution: {e}", file=sys.stdout)
+    finally:
+        sys.stdout = old_stdout
+
+    output = redirected_output.getvalue()
+    redirected_output.close()
+    return output
+def generate_run_code(plan_steps, plugin_schemas):
+    """
+    Generates Python code based on the given plan using specified plugins. Follow the plan as specified. Do not use additional models. Do as specified. Do not assume anything. If you need any variable, process it and used. Define variables concretely.
+    
+    Args:
+        plan_steps (list): Steps defined by the planner.
+        plugin_schemas (dict): Dictionary of loaded plugin schemas.
+    
+    Returns:
+        str: Generated Python code.
+    """
+    code = ""
+    code_prompt =  '''<s> [INST]
+    Generate Python code for the given request. Import the necessary libraries first. Ensure that the generated code is ready for direct execution without requiring predefined variables outside of this context. Do not use the fbprophet package; use the Prophet package instead for trend analysis. Use from prophet import Prophet
+    DATABASE DETAILS:
+    - Database: SQLite
+    - Table Name: fires stored in df
+    - cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+    - USE cnx to query the database using sqlite commands
+
+
+    MEMORY:
+    Context: The 'fires' table contains a comprehensive spatial database of wildfires that occurred in the United States from 1992 to 2015. This data supports national Fire Program Analysis (FPA) systems. The records, sourced from federal, state, and local fire organizations, include essential elements such as discovery date, final fire size, and point locations precise to at least the Public Land Survey System (PLSS) section (1-square mile grid). The data conforms to standards set by the National Wildfire Coordinating Group (NWCG) and includes error-checking and redundancy removal. This data publication, known as the Fire Program Analysis fire-occurrence database (FPA FOD), comprises 1.88 million geo-referenced wildfire records, representing 140 million acres burned over a 24-year period.
+
+    Column Information:
+
+    '''
+    code_prompt+= col_txt
+    code_prompt+='''
+    TOOLS
+    - Print Final Answer: This is not a function. Treat this a plan termination. Just print the results. Use if answer to User's question can be given with MEMORY and data we have. Use this after thorough data analysis
+    - Query_Database: Write only one SQL Query to query the Database. This can only execute one query at a time
+    - PCA_Analysis: Find variance of the principal components
+    - Prophet_module: Implement prophet module to find the trends and trend change points. (from prophet import Prophet)
+    - Remove_duplicates: Remove duplicate rows
+    - convert datetime to required format - from 223453464 to mmddyyyy
+    - extract the necessary metrics and store in dataframe
+    - Classifier - XGBClassifier (before mentioning the classifier, convert all the columns into the correct datatype to avoid errors like- Error during execution: could not convert string to float: '01/01/1970' )
+    - Label Encoder - encode when needed and decode when predicting using inverse transform or decoder
+    - RandomForestClassifier - use variable name - rf_model
+    - Classification_Report: Generate reports on classifier performance.
+    - Inverse transform
+    - Data_Encoding: Use Label Encoders for categorical data and handle inverse transformations.
+    - Split date format into week, month, day - for integer processing
+    - Remove None by dropna
+    - Pandas - import pandas as pd
+
+        
+    CODE GENERATION SPECIFICATIONS:
+    1. Define all intermediate data structures or variables explicitly.
+    2. Ensure all necessary libraries are imported at the beginning of the script.
+    3. Write clear comments within the code to describe each operation.
+    4. For each tool mentioned, include a code snippet that initializes the tool, performs the operation, and stores or prints the result.
+    5. Make sure to handle all data preprocessing within the script, including the conversion of date formats, encoding of categorical variables, and preparation of the dataset for machine learning models.
+    6. Avoid these errors - DataFrame.dtypes for data must be int, float, bool or category. When categorical type is supplied, The experimental DMatrix parameter`enable_categorical` must be set to `True`.  Invalid columns:DISCOVERY_DATE: object
+    7. Use Previous steps/CODE to define the variable names properly and reuse them if needed
+    8. Avoid variable name errors by carefully using <CODE> to define the variables
+    9. Extract relevant features which will be useful for prediction
+    10.replace null type attributes with a suitable data type and value
+
+    [/INST]
+    Previous steps <CODE>:
+    '''
+    counter = 0
+    f = open("execution_results.txt", "w")
+    f_error = open("error_results.txt","w")
+    f_code = open("code_txt.txt","w")
+    error_counter =0
+    local_environment = {'df': df_interest}
+    for step in plan_steps:
+        counter+=1
+        print(counter)
+        if 'plugin' in step:
+            plugin_name = step.split(':')[1].strip()
+            if plugin_name in plugin_schemas:
+                schema = plugin_schemas[plugin_name]
+                code += f"# Using plugin: {plugin_name}\n"
+                code += f"{schema['function_name']}({', '.join(f'{arg}={value}' for arg, value in schema['arguments'].items())})\n"
+        else:
+            # Generate general Python code based on LLM suggestions
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content":code_prompt},
+                    {"role": "user", "content": step}
+                ]
+            )
+            generated_code = response['choices'][0]['message']['content']
+            code += f"{generated_code}\n"
+            code_formatted = f"{generated_code}\n"
+            tmp = extract_python_code(code_formatted)
+            
+            if(len(tmp)==0):
+                print("jalend")
+                print(step)
+                print(generated_code)
+                break
+            f_code.write(str(tmp[0])+"\n")    
+#             print("Step asked")
+#             print(step)
+#             print("First generated code")
+#             print(generated_code)
+#             print("Code extracted first")
+#             print(tmp)
+
+            try:
+                execution_result = run_code_with_custom_globals(tmp[0])
+            except:
+                print("error in tmp")
+                print(tmp)
+                break
+#             print(execution_result)
+            if('Error' in execution_result):
+                print("Error detected")
+                f_error.write(str(execution_result) + "\n")
+                error_counter+=1
+                print(error_counter)
+#                 print(execution_result)
+                regenerated_code = regenerate_code_with_reflection(tmp[0],execution_result,code_prompt)
+                code += f"{regenerated_code}\n"
+                code_formatted = f"{regenerated_code}\n"
+                tmp = extract_python_code(code_formatted)
+                
+#                 print("Code extracted after error")
+#                 print(tmp)
+                try:
+                    execution_result = run_code_with_custom_globals(tmp[0])
+                    f_code.write(str(tmp[0])+"\n")
+                    if('Error' in execution_result):
+                        print("error still exists")
+                        print(execution_result)
+                        print(tmp[0])
+                        break
+                except:
+                    print("error in  tmp error")
+                    print(tmp)
+                    print(regenerated_code)
+                    print(code_formatted)
+        
+
+            code_prompt+=step
+            code_prompt+=code_formatted
+            f.write(str(execution_result) + "\n")
+            #print(execution_result)
+    f.close()
+    f_error.close()
+    f_code.close()
+    return code
+
+
+
+#    Generate Python code for the given request. Import the necessary libraries. Generate only the code so that I can directly execute. Do not use fbprophet only use prophet
+#     The database in discussion is df (pandas dataframe).Do not assume the existence of variables. Create them if required and use them. Use proper variable names as defined, do not assume variable names.
+#     Clearly define the target variable name based on previous steps.
+#    10. After identifying and extracting the necessary features for modeling, systematically remove rows containing None values to ensure dataset integrity
+
+
+
+plugin_schemas = {}
+generated_code = generate_run_code(plan_steps, plugin_schemas)
+# tmp = extract_python_code(generated_code)
+
+# from tqdm import tqdm
+
+# local_environment = {'df': df_interest}  # Assume df is your DataFrame loaded with the data
+# for i in tqdm(range(len(tmp))):
+#     x = tmp[i]
+#     execution_result = run_code_with_custom_globals(x, local_environment)
+#     # Output the results
+#     print("Execution Output:")
+#     print(execution_result)
+#     if('Error' in execution_result):
+#         print(x)

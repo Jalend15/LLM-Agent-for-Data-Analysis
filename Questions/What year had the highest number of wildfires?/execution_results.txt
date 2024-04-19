@@ -1,0 +1,32 @@
+    FIRE_YEAR  Num_Fires
+0        1992      67975
+1        1993      61989
+2        1994      75955
+3        1995      71472
+4        1996      75574
+5        1997      61450
+6        1998      68370
+7        1999      89363
+8        2000      96416
+9        2001      86587
+10       2002      75656
+11       2003      68261
+12       2004      69279
+13       2005      88604
+14       2006     114004
+15       2007      95573
+16       2008      85378
+17       2009      78325
+18       2010      79889
+19       2011      90552
+20       2012      72769
+21       2013      64780
+22       2014      67753
+23       2015      74491
+
+The year with the highest number of wildfires is 2006 with 114004 wildfires.
+
+The year with the highest number of wildfires is 2006.
+
+The year with the highest number of wildfires is 2006.
+

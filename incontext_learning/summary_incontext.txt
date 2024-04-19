@@ -1,0 +1,8 @@
+1. Query Fire Data: Execute an SQL query to extract records from the fire incidents database. Retrieve all relevant columns for state, county, and monthly fire counts for each county. Store the results in a DataFrame named monthly_fire_counts.
+2. Combine Columns: In the monthly_fire_counts DataFrame, merge the state and county names into a single column named 'State_County'. This facilitates easier aggregation and analysis.
+3. Aggregate Fire Data: Using SQL, aggregate the total number of fires, the cumulative fire duration, and the total area affected by fires for each county. Store these aggregated metrics in a new DataFrame named county_fire_stats.
+4. Standardize Metrics: Standardize the metrics (total fires, duration, and area) in the county_fire_stats DataFrame using z-scores to allow comparison across different scales and distributions.
+5. Principal Component Analysis (PCA): Apply PCA to the standardized metrics in county_fire_stats to reduce dimensionality and identify the principal components that explain the most variance in the data.
+6. Analyze Variance: Analyze the explained variance of each principal component to identify the most significant component that correlates with fire proneness.
+7. Identify Extremes using the data extracted: Determine the counties with the highest and lowest scores on the principal component that shows the highest variance. These scores will indicate the most and least fire-prone counties.
+8. Output Results based on data: Print the names of the counties that are identified as the most and least fire-prone based on the analysis.

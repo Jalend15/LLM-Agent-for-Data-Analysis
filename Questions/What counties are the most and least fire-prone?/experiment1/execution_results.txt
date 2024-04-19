@@ -1,0 +1,68 @@
+  STATE COUNTY MONTH_YEAR  FIRE_COUNT
+0    AK   None    1992-04          20
+1    AK   None    1992-05         156
+2    AK   None    1992-06         127
+3    AK   None    1992-07         105
+4    AK   None    1992-08          38
+
+  STATE COUNTY MONTH_YEAR  FIRE_COUNT State_County
+0    AK   None    1992-04          20          NaN
+1    AK   None    1992-05         156          NaN
+2    AK   None    1992-06         127          NaN
+3    AK   None    1992-07         105          NaN
+4    AK   None    1992-08          38          NaN
+
+     COUNTY  TOTAL_FIRE_DURATION  TOTAL_FIRE_SIZE  FIRE_COUNT
+0      None             441113.0     6.849297e+07      678148
+1        49              42198.0     9.754730e+05        3913
+2   SUFFOLK              19738.0     1.242023e+04        7373
+3    QUEENS              12557.0     2.882500e+02        2480
+4       049              11832.0     7.208907e+05        1622
+5         5              11464.0     2.630135e+05        7576
+6    NASSAU              11432.0     1.145800e+03        2940
+7     KINGS               9145.0     4.821000e+02        1951
+8        63               8431.0     3.249992e+05        1878
+9  ROCKLAND               8391.0     3.709820e+03        2854
+
+     COUNTY  TOTAL_FIRE_DURATION  TOTAL_FIRE_SIZE  FIRE_COUNT  STD_FIRE_DURATION  STD_FIRE_SIZE  STD_FIRE_COUNT
+0      None             441113.0     6.849297e+07      678148           2.991549       2.999622        2.999846
+1        49              42198.0     9.754730e+05        3913          -0.120386      -0.298141       -0.331872
+2   SUFFOLK              19738.0     1.242023e+04        7373          -0.295596      -0.345180       -0.314775
+3    QUEENS              12557.0     2.882500e+02        2480          -0.351615      -0.345772       -0.338953
+4       049              11832.0     7.208907e+05        1622          -0.357271      -0.310576       -0.343193
+5         5              11464.0     2.630135e+05        7576          -0.360142      -0.332940       -0.313772
+6    NASSAU              11432.0     1.145800e+03        2940          -0.360391      -0.345731       -0.336680
+7     KINGS               9145.0     4.821000e+02        1951          -0.378232      -0.345763       -0.341567
+8        63               8431.0     3.249992e+05        1878          -0.383802      -0.329913       -0.341928
+9  ROCKLAND               8391.0     3.709820e+03        2854          -0.384114      -0.345605       -0.337105
+
+Variance of Principal Components:
+[9.98887579e-01 1.05903830e-03 5.33826474e-05]
+
+Variance of Principal Components:
+[9.98887579e-01 1.05903830e-03 5.33826474e-05]
+
+The most significant principal component is Component 1
+
+County with the highest value on the significant component: None
+County with the lowest value on the significant component: ROCKLAND
+
+
+Fire-Prone Counties Analysis Report:
+
+Most Fire-Prone County: None
+Least Fire-Prone County: ROCKLAND
+
+Top 10 Counties with Fire Statistics:
+     COUNTY  TOTAL_FIRE_DURATION  TOTAL_FIRE_SIZE  FIRE_COUNT
+0      None             441113.0     6.849297e+07      678148
+1        49              42198.0     9.754730e+05        3913
+2   SUFFOLK              19738.0     1.242023e+04        7373
+3    QUEENS              12557.0     2.882500e+02        2480
+4       049              11832.0     7.208907e+05        1622
+5         5              11464.0     2.630135e+05        7576
+6    NASSAU              11432.0     1.145800e+03        2940
+7     KINGS               9145.0     4.821000e+02        1951
+8        63               8431.0     3.249992e+05        1878
+9  ROCKLAND               8391.0     3.709820e+03        2854
+

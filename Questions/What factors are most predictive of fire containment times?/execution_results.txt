@@ -1,0 +1,63 @@
+   DISCOVERY_DATE  CONT_DATE CONT_TIME  FIRE_SIZE FIRE_SIZE_CLASS STAT_CAUSE_DESCR       OWNER_DESCR STATE COUNTY
+0       2453403.5  2453403.5      1730       0.10               A    Miscellaneous              USFS    CA     63
+1       2453137.5  2453137.5      1530       0.25               A        Lightning              USFS    CA     61
+2       2453156.5  2453156.5      2024       0.10               A   Debris Burning  STATE OR PRIVATE    CA     17
+3       2453184.5  2453189.5      1400       0.10               A        Lightning              USFS    CA      3
+4       2453184.5  2453189.5      1200       0.10               A        Lightning              USFS    CA      3
+
+                 DISCOVERY_DATE                     CONT_DATE CONT_TIME  FIRE_SIZE FIRE_SIZE_CLASS STAT_CAUSE_DESCR       OWNER_DESCR STATE COUNTY             FIRE_DURATION
+0 1970-01-01 00:00:00.002453403 1970-01-01 00:00:00.002453403      1730       0.10               A    Miscellaneous              USFS    CA     63           0 days 00:00:00
+1 1970-01-01 00:00:00.002453137 1970-01-01 00:00:00.002453137      1530       0.25               A        Lightning              USFS    CA     61           0 days 00:00:00
+2 1970-01-01 00:00:00.002453156 1970-01-01 00:00:00.002453156      2024       0.10               A   Debris Burning  STATE OR PRIVATE    CA     17           0 days 00:00:00
+3 1970-01-01 00:00:00.002453184 1970-01-01 00:00:00.002453189      1400       0.10               A        Lightning              USFS    CA      3 0 days 00:00:00.000000005
+4 1970-01-01 00:00:00.002453184 1970-01-01 00:00:00.002453189      1200       0.10               A        Lightning              USFS    CA      3 0 days 00:00:00.000000005
+
+                 DISCOVERY_DATE                     CONT_DATE CONT_TIME  FIRE_SIZE FIRE_SIZE_CLASS  STAT_CAUSE_DESCR  OWNER_DESCR  STATE  COUNTY             FIRE_DURATION
+0 1970-01-01 00:00:00.002453403 1970-01-01 00:00:00.002453403      1730       0.10               A                 7           15      4     199           0 days 00:00:00
+1 1970-01-01 00:00:00.002453137 1970-01-01 00:00:00.002453137      1530       0.25               A                 6           15      4     197           0 days 00:00:00
+2 1970-01-01 00:00:00.002453156 1970-01-01 00:00:00.002453156      2024       0.10               A                 3           12      4     100           0 days 00:00:00
+3 1970-01-01 00:00:00.002453184 1970-01-01 00:00:00.002453189      1400       0.10               A                 6           15      4     151 0 days 00:00:00.000000005
+4 1970-01-01 00:00:00.002453184 1970-01-01 00:00:00.002453189      1200       0.10               A                 6           15      4     151 0 days 00:00:00.000000005
+
+   FIRE_SIZE FIRE_SIZE_CLASS  STAT_CAUSE_DESCR  OWNER_DESCR  STATE  COUNTY             FIRE_DURATION
+0       0.10               A                 7           15      4     199           0 days 00:00:00
+1       0.25               A                 6           15      4     197           0 days 00:00:00
+2       0.10               A                 3           12      4     100           0 days 00:00:00
+3       0.10               A                 6           15      4     151 0 days 00:00:00.000000005
+4       0.10               A                 6           15      4     151 0 days 00:00:00.000000005
+
+                 DISCOVERY_DATE                     CONT_DATE CONT_TIME  FIRE_SIZE FIRE_SIZE_CLASS STAT_CAUSE_DESCR       OWNER_DESCR STATE COUNTY  FIRE_DURATION
+0 1970-01-01 00:00:00.002453403 1970-01-01 00:00:00.002453403      1730  -0.029797               A    Miscellaneous              USFS    CA     63            0.0
+1 1970-01-01 00:00:00.002453137 1970-01-01 00:00:00.002453137      1530  -0.029737               A        Lightning              USFS    CA     61            0.0
+2 1970-01-01 00:00:00.002453156 1970-01-01 00:00:00.002453156      2024  -0.029797               A   Debris Burning  STATE OR PRIVATE    CA     17            0.0
+3 1970-01-01 00:00:00.002453184 1970-01-01 00:00:00.002453189      1400  -0.029797               A        Lightning              USFS    CA      3            0.0
+4 1970-01-01 00:00:00.002453184 1970-01-01 00:00:00.002453189      1200  -0.029797               A        Lightning              USFS    CA      3            0.0
+
+                 DISCOVERY_DATE                     CONT_DATE CONT_TIME  FIRE_SIZE FIRE_SIZE_CLASS STAT_CAUSE_DESCR       OWNER_DESCR STATE COUNTY  FIRE_DURATION
+0 1970-01-01 00:00:00.002453403 1970-01-01 00:00:00.002453403      1730  -0.029797               A    Miscellaneous              USFS    CA     63            0.0
+1 1970-01-01 00:00:00.002453137 1970-01-01 00:00:00.002453137      1530  -0.029737               A        Lightning              USFS    CA     61            0.0
+2 1970-01-01 00:00:00.002453156 1970-01-01 00:00:00.002453156      2024  -0.029797               A   Debris Burning  STATE OR PRIVATE    CA     17            0.0
+3 1970-01-01 00:00:00.002453184 1970-01-01 00:00:00.002453189      1400  -0.029797               A        Lightning              USFS    CA      3            0.0
+4 1970-01-01 00:00:00.002453184 1970-01-01 00:00:00.002453189      1200  -0.029797               A        Lightning              USFS    CA      3            0.0
+
+                 DISCOVERY_DATE                     CONT_DATE CONT_TIME  FIRE_SIZE FIRE_SIZE_CLASS STAT_CAUSE_DESCR       OWNER_DESCR STATE COUNTY  FIRE_DURATION
+0 1970-01-01 00:00:00.002453403 1970-01-01 00:00:00.002453403      1730  -0.029797               A    Miscellaneous              USFS    CA     63            0.0
+1 1970-01-01 00:00:00.002453137 1970-01-01 00:00:00.002453137      1530  -0.029737               A        Lightning              USFS    CA     61            0.0
+2 1970-01-01 00:00:00.002453156 1970-01-01 00:00:00.002453156      2024  -0.029797               A   Debris Burning  STATE OR PRIVATE    CA     17            0.0
+3 1970-01-01 00:00:00.002453184 1970-01-01 00:00:00.002453189      1400  -0.029797               A        Lightning              USFS    CA      3            0.0
+4 1970-01-01 00:00:00.002453184 1970-01-01 00:00:00.002453189      1200  -0.029797               A        Lightning              USFS    CA      3            0.0
+
+                 DISCOVERY_DATE                     CONT_DATE CONT_TIME  FIRE_SIZE FIRE_SIZE_CLASS STAT_CAUSE_DESCR       OWNER_DESCR STATE COUNTY  FIRE_DURATION
+0 1970-01-01 00:00:00.002453403 1970-01-01 00:00:00.002453403      1730  -0.029797               A    Miscellaneous              USFS    CA     63            0.0
+1 1970-01-01 00:00:00.002453137 1970-01-01 00:00:00.002453137      1530  -0.029737               A        Lightning              USFS    CA     61            0.0
+2 1970-01-01 00:00:00.002453156 1970-01-01 00:00:00.002453156      2024  -0.029797               A   Debris Burning  STATE OR PRIVATE    CA     17            0.0
+3 1970-01-01 00:00:00.002453184 1970-01-01 00:00:00.002453189      1400  -0.029797               A        Lightning              USFS    CA      3            0.0
+4 1970-01-01 00:00:00.002453184 1970-01-01 00:00:00.002453189      1200  -0.029797               A        Lightning              USFS    CA      3            0.0
+
+                 DISCOVERY_DATE                     CONT_DATE CONT_TIME  FIRE_SIZE FIRE_SIZE_CLASS STAT_CAUSE_DESCR       OWNER_DESCR STATE COUNTY  FIRE_DURATION
+0 1970-01-01 00:00:00.002453403 1970-01-01 00:00:00.002453403      1730  -0.029797               A    Miscellaneous              USFS    CA     63            0.0
+1 1970-01-01 00:00:00.002453137 1970-01-01 00:00:00.002453137      1530  -0.029737               A        Lightning              USFS    CA     61            0.0
+2 1970-01-01 00:00:00.002453156 1970-01-01 00:00:00.002453156      2024  -0.029797               A   Debris Burning  STATE OR PRIVATE    CA     17            0.0
+3 1970-01-01 00:00:00.002453184 1970-01-01 00:00:00.002453189      1400  -0.029797               A        Lightning              USFS    CA      3            0.0
+4 1970-01-01 00:00:00.002453184 1970-01-01 00:00:00.002453189      1200  -0.029797               A        Lightning              USFS    CA      3            0.0
+

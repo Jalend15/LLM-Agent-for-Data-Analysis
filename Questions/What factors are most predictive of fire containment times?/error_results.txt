@@ -1,0 +1,18 @@
+Error during execution: The DType <class 'numpy.dtype[float64]'> could not be promoted by <class 'numpy.dtype[timedelta64]'>. This means that no common DType exists for the given inputs. For example they cannot be stored in a single array unless the dtype is `object`. The full list of DTypes is: (<class 'numpy.dtype[float64]'>, <class 'numpy.dtype[timedelta64]'>)
+
+Error during execution: The DType <class 'numpy.dtype[float64]'> could not be promoted by <class 'numpy.dtype[datetime64]'>. This means that no common DType exists for the given inputs. For example they cannot be stored in a single array unless the dtype is `object`. The full list of DTypes is: (<class 'numpy.dtype[datetime64]'>, <class 'numpy.dtype[datetime64]'>, <class 'numpy.dtype[object_]'>, <class 'numpy.dtype[float64]'>, <class 'numpy.dtype[object_]'>, <class 'numpy.dtype[object_]'>, <class 'numpy.dtype[object_]'>, <class 'numpy.dtype[object_]'>, <class 'numpy.dtype[object_]'>)
+
+Error during execution: float() argument must be a string or a real number, not 'Timestamp'
+
+                 DISCOVERY_DATE                     CONT_DATE CONT_TIME  FIRE_SIZE FIRE_SIZE_CLASS STAT_CAUSE_DESCR       OWNER_DESCR STATE COUNTY  FIRE_DURATION
+0 1970-01-01 00:00:00.002453403 1970-01-01 00:00:00.002453403      1730  -0.029797               A    Miscellaneous              USFS    CA     63            0.0
+1 1970-01-01 00:00:00.002453137 1970-01-01 00:00:00.002453137      1530  -0.029737               A        Lightning              USFS    CA     61            0.0
+2 1970-01-01 00:00:00.002453156 1970-01-01 00:00:00.002453156      2024  -0.029797               A   Debris Burning  STATE OR PRIVATE    CA     17            0.0
+3 1970-01-01 00:00:00.002453184 1970-01-01 00:00:00.002453189      1400  -0.029797               A        Lightning              USFS    CA      3            0.0
+4 1970-01-01 00:00:00.002453184 1970-01-01 00:00:00.002453189      1200  -0.029797               A        Lightning              USFS    CA      3            0.0
+Error during execution: y contains previously unseen labels: ['Arson' 'Campfire' 'Children' 'Debris Burning' 'Equipment Use'
+ 'Fireworks' 'Lightning' 'Miscellaneous' 'Missing/Undefined' 'Powerline'
+ 'Railroad' 'Smoking' 'Structure']
+
+Error during execution: float() argument must be a string or a real number, not 'Timestamp'
+

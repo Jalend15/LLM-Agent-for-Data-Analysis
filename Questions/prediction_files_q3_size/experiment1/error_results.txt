@@ -1,0 +1,2 @@
+Error during execution: name 'fire_size_value' is not defined
+

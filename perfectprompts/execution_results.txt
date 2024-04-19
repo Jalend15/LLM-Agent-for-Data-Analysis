@@ -1,0 +1,45 @@
+
+
+
+
+Variance Explained by Principal Components:
+Principal Component 1: 0.50
+Principal Component 2: 0.50
+
+Variance Explained by Principal Components:
+Principal Component 1: 0.50
+Principal Component 2: 0.50
+
+County with the Highest Fire Proneness:
+STATE                        AK
+COUNTY                     None
+TOTAL_FIRE_SIZE         2.96587
+TOTAL_FIRE_COUNT      -0.401192
+Principal_Component    2.380873
+Name: 0, dtype: object
+
+County with the Lowest Fire Proneness:
+STATE                        CA
+COUNTY                     None
+TOTAL_FIRE_SIZE        0.059121
+TOTAL_FIRE_COUNT       2.805646
+Principal_Component   -1.942086
+Name: 1, dtype: object
+
+Final Results:
+
+Most Fire-Prone County:
+County: None, State: AK
+Total Fire Size: 2.9658703667469903
+Total Fire Count: -0.40119182524292724
+Principal Component Value: 2.3808725086329026
+
+Least Fire-Prone County:
+County: None, State: CA
+Total Fire Size: 0.059120797925995304
+Total Fire Count: 2.8056455460229794
+Principal Component Value: -1.942086274076062
+
+Rationale:
+Based on the Principal Component Analysis (PCA), the identified principal component captures the variance in the dataset related to both total fire size and total fire count. The county with the highest value on this component exhibits a combination of significant fire size and frequency, indicating it as the most fire-prone county. Conversely, the county with the lowest value on the principal component reflects lower fire size and frequency, hence classified as the least fire-prone county.
+

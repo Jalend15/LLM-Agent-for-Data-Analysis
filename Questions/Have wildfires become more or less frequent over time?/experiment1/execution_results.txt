@@ -1,0 +1,41 @@
+   FIRE_YEAR FIRE_SIZE_CLASS
+0       2005               A
+1       2004               A
+2       2004               A
+3       2004               A
+4       2004               A
+
+   FIRE_YEAR FIRE_SIZE_CLASS
+0 2005-01-01               A
+1 2004-01-01               A
+2 2004-01-01               A
+3 2004-01-01               A
+4 2004-01-01               A
+
+   FIRE_YEAR  wildfire_count
+0 1992-01-01           67975
+1 1993-01-01           61989
+2 1994-01-01           75955
+3 1995-01-01           71472
+4 1996-01-01           75574
+
+   FIRE_YEAR  FIRE_SIZE_CLASS
+0 2005-01-01                0
+1 2004-01-01                0
+2 2004-01-01                0
+3 2004-01-01                0
+4 2004-01-01                0
+
+
+
+              precision    recall  f1-score   support
+
+           0       0.67      1.00      0.80         2
+           1       1.00      0.67      0.80         3
+
+    accuracy                           0.80         5
+   macro avg       0.83      0.83      0.80         5
+weighted avg       0.87      0.80      0.80         5
+
+
+

@@ -1,0 +1,51 @@
+# Import necessary libraries
+import pandas as pd
+import sqlite3
+
+# Connect to the SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# Query relevant columns from the 'fires' table
+query = "SELECT FIRE_YEAR, FIRE_SIZE, FIRE_SIZE_CLASS FROM fires"
+
+# Retrieve data into a DataFrame
+wildfire_data = pd.read_sql(query, cnx)
+
+# Drop any duplicate records to ensure data accuracy
+wildfire_data.drop_duplicates(inplace=True)
+
+# Display the first few rows of the DataFrame
+wildfire_data.head()
+# Filter data for the year 2015
+wildfires_2015 = wildfire_data[wildfire_data['FIRE_YEAR'] == 2015]
+
+# Display the filtered data
+wildfires_2015.head()
+# Convert 'FIRE_SIZE' column to numeric format
+wildfires_2015['FIRE_SIZE'] = pd.to_numeric(wildfires_2015['FIRE_SIZE'], errors='coerce')
+
+# Filter out entries in 'FIRE_SIZE_CLASS' not within classes 'A' to 'G'
+valid_classes = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+wildfires_2015 = wildfires_2015[wildfires_2015['FIRE_SIZE_CLASS'].isin(valid_classes)]
+
+# Display the updated DataFrame
+wildfires_2015.head()
+# Define a dictionary mapping fire size class to property damage values
+fire_size_scale = {'A': 25000, 'B': 50000, 'C': 100000, 'D': 250000, 'E': 500000, 'F': 1000000, 'G': 5000000}
+
+# Calculate property damage for each wildfire based on size class and actual size
+wildfires_2015['PROPERTY_DAMAGE'] = wildfires_2015['FIRE_SIZE_CLASS'].map(fire_size_scale) * wildfires_2015['FIRE_SIZE']
+
+# Sum up property damage values for total property damage caused by wildfires in 2015
+total_property_damage_2015 = wildfires_2015['PROPERTY_DAMAGE'].sum()
+
+# Display the total property damage caused by wildfires in 2015
+print("Total Property Damage Caused by Wildfires in 2015: $", total_property_damage_2015)
+# Print the total estimated property damage caused by wildfires in 2015
+print("Total Property Damage Caused by Wildfires in 2015: $", total_property_damage_2015)
+
+# Informative Reporting
+print("The total property damage caused by wildfires in 2015 amounts to $", total_property_damage_2015)
+print("This estimation is based on the size class and actual size of each wildfire.")
+print("The property damage values were scaled according to predefined class-property damage mapping.")
+print("Understanding the total property damage helps in assessing the impact of wildfires in 2015.")

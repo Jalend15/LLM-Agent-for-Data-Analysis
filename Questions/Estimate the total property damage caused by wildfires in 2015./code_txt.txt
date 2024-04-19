@@ -1,0 +1,15 @@
+import pandas as pd
+import sqlite3
+
+# Establish a connection to the SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# Write the SQL query to filter the 'fires' table for entries where the 'FIRE_YEAR' is equal to 2015
+query = "SELECT * FROM fires WHERE FIRE_YEAR = 2015"
+
+# Execute the query and store the results in a DataFrame named 'wildfires_2015'
+wildfires_2015 = pd.read_sql(query, cnx)
+# Calculate the total property damage caused by wildfires in 2015 by summing up the 'FIRE_SIZE' column
+total_property_damage = wildfires_2015['FIRE_SIZE'].sum()
+# Print the final answer 'total_property_damage' to report the estimated total property damage caused by wildfires in 2015
+print(total_property_damage)

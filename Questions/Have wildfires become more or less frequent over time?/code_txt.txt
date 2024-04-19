@@ -1,0 +1,146 @@
+# Import necessary libraries
+import sqlite3
+import pandas as pd
+
+# Connect to SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# SQL query to get relevant columns from 'fire' table
+query = """
+SELECT FIRE_YEAR, DISCOVERY_DOY, DISCOVERY_TIME, CONT_DOY, CONT_TIME, STAT_CAUSE_CODE, STAT_CAUSE_DESCR,
+       FIRE_SIZE, LATITUDE, LONGITUDE, STATE, COUNTY, FIPS_NAME, DISCOVERY_DATE
+FROM fires
+"""
+
+# Execute the query and store the result in a DataFrame
+df_interest = pd.read_sql_query(query, cnx)
+
+# Display a summary of missing values
+print(df_interest.isna().sum())
+
+# Remove duplicate rows
+df_interest.drop_duplicates(inplace=True)
+
+# Display the number of rows after removing duplicates
+print(f"Number of rows after removing duplicates: {df_interest.shape[0]}")
+# Import required libraries
+from datetime import datetime, timedelta
+
+# Combine 'FIRE_YEAR' and 'DISCOVERY_DOY' to create 'combined_date_dis'
+# The 'origin' parameter is set to 'julian' and unit is set to 'D'. The 'format' parameter is set to '%Y' since the 'DISCOVERY_DOY' is expressed as an integer day count.
+df_interest['combined_date_dis'] = pd.to_datetime(df_interest['FIRE_YEAR'].astype(str) + df_interest['DISCOVERY_DOY'].astype(str), format='%Y%j')
+
+# Display the DataFrame to verify the changes
+print(df_interest.head())
+# Import necessary libraries
+import matplotlib.pyplot as plt
+
+# Set 'combined_date_dis' as the index of df_interest
+df_interest.set_index('combined_date_dis', inplace=True)
+
+# Aggregate data to get monthly fire counts
+monthly_trend = df_interest.resample('M').count()
+
+# Aggregate data to get yearly fire counts
+yearly_trend = df_interest.resample('Y').count()
+
+# Plot monthly and yearly trends
+plt.figure(figsize=(12, 6))
+plt.plot(monthly_trend.index, monthly_trend['FIRE_YEAR'], label='Monthly trend')
+plt.plot(yearly_trend.index, yearly_trend['FIRE_YEAR'], label='Yearly trend')
+plt.legend()
+plt.title('Fire Counts Trends')
+plt.xlabel('Date')
+plt.ylabel('Fire counts')
+plt.show()
+# Import necessary library
+from prophet import Prophet
+
+# Reset index and rename columns for compatibility with Prophet
+df_interest = df_interest.reset_index().rename(columns={'combined_date_dis':'ds', 'FIRE_YEAR':'y'})
+
+# Function for setting up and running Prophet model
+def prophet_model(df, growth, seasonality_mode, changepoints):
+    m = Prophet(growth=growth, seasonality_mode=seasonality_mode, changepoint_range=1.0, changepoints=changepoints)
+    m.fit(df)
+    future = m.make_future_dataframe(periods=365)
+    forecast = m.predict(future)
+    return m, forecast
+
+# Use the defined function on the fire data
+m, forecast = prophet_model(df_interest, "linear", "additive", 0.95)
+
+# Print the model and forecast
+print(m)
+print(forecast)
+# Import necessary library
+from prophet import Prophet
+
+# Reset index and rename columns for compatibility with Prophet
+df_interest = df_interest.reset_index().rename(columns={'combined_date_dis':'ds', 'FIRE_YEAR':'y'})
+
+# Function for setting up and running Prophet model
+def prophet_model(df, growth, seasonality_mode):
+    m = Prophet(growth=growth, seasonality_mode=seasonality_mode, changepoint_range=0.8)
+    m.fit(df)
+    future = m.make_future_dataframe(periods=365)
+    forecast = m.predict(future)
+    return m, forecast
+
+# Use the defined function on the fire data
+m, forecast = prophet_model(df_interest, "linear", "additive")
+
+# Print the model and forecast
+print(m)
+print(forecast)
+# Import required libraries
+from sklearn import linear_model
+import datetime as dt
+
+# Plot forecast and components
+m.plot(forecast)
+m.plot_components(forecast)
+
+# Extracting change points
+change_points = m.changepoints.tolist()
+
+# Highlighting change points
+plt.figure(figsize=(18, 6))
+plt.plot(forecast['ds'], forecast['trend'], label='Trend')
+plt.scatter(change_points, forecast.loc[forecast['ds'].isin(change_points), 'trend'], 
+            c = "red", label='Change points')
+plt.legend()
+
+plt.title('Fire counts Trend and Change points')
+plt.xlabel('Date')
+plt.ylabel('Trend')
+plt.show()
+
+# Segments for trend analysis
+trend = forecast[["ds","trend"]]
+lower_portion = trend[(trend["ds"]<change_points[0])]
+upper_portion = trend[(trend["ds"]>change_points[0])]
+
+# Calculate slopes using linear Regression
+reg_lower = linear_model.LinearRegression()
+reg_upper = linear_model.LinearRegression()
+
+reg_lower.fit(pd.to_datetime(lower_portion['ds']).map(dt.datetime.toordinal).values.reshape(-1, 1), lower_portion['trend'].values)
+reg_upper.fit(pd.to_datetime(upper_portion['ds']).map(dt.datetime.toordinal).values.reshape(-1, 1), upper_portion['trend'].values)
+
+# Printing slopes before and after the first changepoint
+print(f"Slope before first changepoint({change_points[0]}): {reg_lower.coef_}")
+print(f"Slope after first changepoint({change_points[0]}): {reg_upper.coef_}")
+# Calculate slopes of the trends before and after the changepoint
+slope_before = reg_lower.coef_
+slope_after = reg_upper.coef_
+
+# Output the slopes
+print(f'The slope of the fire frequency trend before the changepoint is {slope_before}')
+print(f'The slope of the fire frequency trend after the changepoint is {slope_after}')
+
+# Determine whether fire frequency has increased or decreased
+if slope_after > slope_before:
+    print('The frequency of fires has increased over time.')
+else:
+    print('The frequency of fires has decreased over time.')

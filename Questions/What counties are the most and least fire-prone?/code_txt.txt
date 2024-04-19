@@ -1,0 +1,95 @@
+import sqlite3
+
+# Establish a connection to the SQLite database file
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# Specify the table name 'fires' for further querying
+table_name = 'fires'
+import pandas as pd
+
+# SQL query to retrieve state, county, discovery date, and count of fires per month
+query = """
+SELECT STATE, COUNTY, STRFTIME('%Y-%m', DISCOVERY_DATE) AS MONTH, COUNT(*) AS FIRE_COUNT
+FROM fires
+GROUP BY STATE, COUNTY, MONTH
+ORDER BY STATE, COUNTY, MONTH
+"""
+
+# Execute the query and store results in a DataFrame
+monthly_fire_counts = pd.read_sql(query, cnx)
+# Merge state and county names and create a new column 'State_County'
+monthly_fire_counts['State_County'] = monthly_fire_counts['STATE'] + '_' + monthly_fire_counts['COUNTY']
+
+# Drop the individual 'STATE' and 'COUNTY' columns
+monthly_fire_counts.drop(columns=['STATE', 'COUNTY'], inplace=True)
+# SQL query to aggregate fire statistics for each county
+query_stats = """
+SELECT STATE, COUNTY, 
+       COUNT(*) AS TOTAL_FIRES, 
+       SUM(JULIANDAY(CONT_DATE) - JULIANDAY(DISCOVERY_DATE)) AS CUMULATIVE_FIRE_DURATION, 
+       SUM(FIRE_SIZE) AS TOTAL_AFFECTED_AREA
+FROM fires
+GROUP BY STATE, COUNTY
+ORDER BY STATE, COUNTY
+"""
+
+# Execute the query and store results in a DataFrame
+county_fire_stats = pd.read_sql(query_stats, cnx)
+from sklearn.preprocessing import StandardScaler
+
+# Initialize StandardScaler
+scaler = StandardScaler()
+
+# Standardize the aggregated metrics in county_fire_stats DataFrame
+metrics_to_standardize = ['TOTAL_FIRES', 'CUMULATIVE_FIRE_DURATION', 'TOTAL_AFFECTED_AREA']
+county_fire_stats[metrics_to_standardize] = scaler.fit_transform(county_fire_stats[metrics_to_standardize])
+from sklearn.decomposition import PCA
+
+# Drop NaN values from the aggregated metrics in county_fire_stats
+county_fire_stats.dropna(inplace=True)
+
+# Initialize PCA
+pca = PCA()
+
+# Fit PCA to the standardized metrics in county_fire_stats
+pca.fit(county_fire_stats[metrics_to_standardize])
+
+# Variance explained by each principal component
+explained_variance_ratio = pca.explained_variance_ratio_
+print("Explained Variance Ratio by Principal Components:")
+print(explained_variance_ratio)
+
+# Principal components
+principal_components = pca.components_
+print("Principal Components:")
+print(principal_components)
+# Analyzing the explained variance of each principal component
+print("Explained Variance Ratio by Principal Components:")
+print(explained_variance_ratio)
+
+# Identifying the most fire-prone counties based on PCA results
+# Using the first principal component for analysis
+first_principal_component = principal_components[0]
+
+# Find the index of the county with the maximum projection on the first principal component
+most_fire_prone_index = first_principal_component.argmax()
+
+# Extract the county name with the maximum projection
+most_fire_prone_county = county_fire_stats.iloc[most_fire_prone_index]['COUNTY']
+
+# Find the index of the county with the minimum projection on the first principal component
+least_fire_prone_index = first_principal_component.argmin()
+
+# Extract the county name with the minimum projection
+least_fire_prone_county = county_fire_stats.iloc[least_fire_prone_index]['COUNTY']
+
+print(f"The most fire-prone county based on PCA is: {most_fire_prone_county}")
+print(f"The least fire-prone county based on PCA is: {least_fire_prone_county}")
+# Print the names of the most and least fire-prone counties based on PCA analysis
+print(f"The most fire-prone county based on PCA is: {most_fire_prone_county}")
+print(f"The least fire-prone county based on PCA is: {least_fire_prone_county}")
+
+# Insights and Recommendations based on PCA findings
+# The PCA analysis indicates the counties with the highest and lowest projections on the first principal component, which represents the major factors contributing to fire proneness.
+# Further investigation could focus on understanding the specific characteristics or variables that contribute to the fire proneness of these counties.
+# Preventive measures could include targeted fire management strategies, early warning systems, community awareness programs, and resource allocation based on the identified risk levels.

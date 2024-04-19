@@ -1,0 +1,8 @@
+"1. Query the 'fires' table to extract the State, County, and monthly counts of fires per county. Store the results in a DataFrame named 'monthly_fire_counts'.\n```sql\nSELECT STATE, COUNTY, COUNT(*) AS MONTHLY_FIRE_COUNT\nFROM fires\nGROUP BY STATE, COUNTY\n```",
+ "2. Merge the 'STATE' and 'COUNTY' columns into a single column 'State_County' in the 'monthly_fire_counts' DataFrame.",
+ "3. Query the database to retrieve the top 10 counties based on total fire duration, fire size, and fire counts. Store these results in a new DataFrame named 'top_counties_stats'.\n```sql\nSELECT STATE, COUNTY, SUM(FIRE_SIZE) AS TOTAL_FIRE_SIZE, COUNT(*) AS TOTAL_FIRE_COUNT\nFROM fires\nGROUP BY STATE, COUNTY\nORDER BY TOTAL_FIRE_SIZE DESC, TOTAL_FIRE_COUNT DESC\nLIMIT 10\n```",
+ "4. Standardize the metriscs in the 'top_counties_stats' DataFrame for comparison. Ensure all numerical values are on the same scale.",
+ "5. Apply Principal Component Analysis (PCA) on the 'top_counties_stats' DataFrame to determine the principal components. Consider variables like 'TOTAL_FIRE_SIZE' and 'TOTAL_FIRE_COUNT' as features.",
+ '6. Analyze the variance of the principal components to identify the most significant ones that explain the majority of the data variability.',
+ '7. Based on the principal component that shows the highest variance, identify the counties with the highest and lowest values on this component. These counties will represent the most and least fire-prone areas respectively.',
+ '8. Format the final results for reporting, detailing the findings on the most and least fire-prone counties, including the rationale behind the classification based on the principal component analysis.'

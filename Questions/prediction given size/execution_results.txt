@@ -1,0 +1,30 @@
+
+   FIRE_SIZE   LATITUDE   LONGITUDE DISCOVERY_DATE STAT_CAUSE_DESCR
+0       0.10  40.036944 -121.005833     01/01/1970    Miscellaneous
+1       0.25  38.933056 -120.404444     01/01/1970        Lightning
+2       0.10  38.984167 -120.735556     01/01/1970   Debris Burning
+3       0.10  38.559167 -119.913333     01/01/1970        Lightning
+4       0.10  38.559167 -119.933056     01/01/1970        Lightning
+
+Empty DataFrame
+Columns: [FIRE_SIZE, LATITUDE, LONGITUDE, DISCOVERY_DATE, STAT_CAUSE_DESCR]
+Index: []
+
+Predicted Cause of the Fire: ['Miscellaneous']
+
+Predicted Cause of the Fire: ['Miscellaneous']
+
+FIRE_SIZE           float64
+LATITUDE            float64
+LONGITUDE           float64
+DISCOVERY_DATE      float64
+STAT_CAUSE_DESCR     object
+dtype: object
+   FIRE_SIZE   LATITUDE   LONGITUDE  DISCOVERY_DATE STAT_CAUSE_DESCR
+0       0.10  40.036944 -121.005833             NaN    Miscellaneous
+1       0.25  38.933056 -120.404444             NaN        Lightning
+2       0.10  38.984167 -120.735556             NaN   Debris Burning
+3       0.10  38.559167 -119.913333             NaN        Lightning
+4       0.10  38.559167 -119.933056             NaN        Lightning
+
+

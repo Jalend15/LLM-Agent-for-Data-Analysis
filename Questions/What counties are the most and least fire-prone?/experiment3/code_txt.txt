@@ -1,0 +1,117 @@
+# Query Database to load the dataset into a DataFrame
+import pandas as pd
+import sqlite3
+
+# Connect to the SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# Query the relevant columns from the fires table
+df_interest = pd.read_sql_query("SELECT FIRE_YEAR, DISCOVERY_DOY, DISCOVERY_TIME, CONT_DOY, CONT_TIME, STAT_CAUSE_CODE, STAT_CAUSE_DESCR, FIRE_SIZE, LATITUDE, LONGITUDE, STATE, COUNTY, FIPS_NAME, DISCOVERY_DATE FROM fires", cnx)
+
+# Remove duplicate rows from df_interest
+df_interest = df_interest.drop_duplicates()
+
+# Display the first few rows of the cleaned DataFrame
+print(df_interest.head())
+# Convert Julian date format into Gregorian date format
+df_interest["combined_date_dis"] = df_interest["FIRE_YEAR"]*1000 + df_interest["DISCOVERY_DOY"]
+df_interest["combined_date_dis"] = pd.to_datetime(df_interest["combined_date_dis"], format="%Y%j")
+
+# Display the first few rows of the DataFrame with the new column
+print(df_interest.head())
+# Set the new datetime column as the index of df_interest
+df_interest = df_interest.set_index("combined_date_dis")
+
+# Aggregate the data to analyze fire counts on a monthly and yearly basis
+monthly_trend = df_interest.resample('M').size()
+yearly_trend = df_interest.resample('Y').size()
+
+# Plot the trends to visualize the changes over time
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(14, 7))
+plt.subplot(2, 1, 1)
+plt.plot(monthly_trend, marker='o', color='b')
+plt.title("Monthly Fire Counts")
+plt.xlabel("Date")
+plt.ylabel("Count")
+
+plt.subplot(2, 1, 2)
+plt.plot(yearly_trend, marker='o', color='r')
+plt.title("Yearly Fire Counts")
+plt.xlabel("Date")
+plt.ylabel("Count")
+
+plt.tight_layout()
+plt.show()
+# Prepare data for Prophet by resetting index and renaming columns
+df_prophet = df_interest.reset_index()[["combined_date_dis", "FIRE_SIZE"]]
+df_prophet.columns = ['ds', 'y']
+
+def prophet_model(data):
+    # Import Prophet from the prophet package
+    from prophet import Prophet
+    
+    # Initialize Prophet model with growth assumptions, seasonality, and changepoints
+    model = Prophet(growth='linear', changepoint_prior_scale=0.5)
+    
+    # Fit the model with the input data
+    model.fit(data)
+    
+    # Define future dates for forecasting
+    future = model.make_future_dataframe(periods=365)
+    
+    # Generate forecasts
+    forecast = model.predict(future)
+    
+    return model, forecast
+
+# Apply the prophet_model function to the daily aggregated fire count data
+model, forecast = prophet_model(df_prophet)
+
+# Print the model and its forecasts
+print(model)
+print(forecast)
+# Visualize components and trend change points using Prophet's output
+model.plot_components(forecast)
+
+# Extract and analyze changepoints
+changepoints = model.changepoints
+
+# Plot the overall forecast and highlight changepoints
+fig = model.plot(forecast)
+plt.title('Forecast with Trend Change Points')
+plt.ylabel('Fire Metric')
+plt.xlabel('Date')
+
+# Highlight changepoints on the plot
+for changepoint in changepoints:
+    plt.axvline(x=pd.to_datetime(changepoint), color='r', linestyle='--')
+
+plt.show()
+# Divide the dataset into portions (pre and post changepoint)
+trend = forecast[["ds", "trend"]]
+changepoints = model.changepoints.to_list()
+lower_portion = trend[trend["ds"] < changepoints[0]]
+upper_portion = trend[trend["ds"] > changepoints[0]]
+
+# Convert datetime to the required format for analysis
+import datetime as dt
+lower_portion["ts_num"] = pd.to_datetime(lower_portion["ds"]).map(dt.datetime.toordinal)
+upper_portion["ts_num"] = pd.to_datetime(upper_portion["ds"]).map(dt.datetime.toordinal)
+
+# Use linear regression to determine changes in the slope of the trend lines
+from sklearn import linear_model
+
+reg_lower = linear_model.LinearRegression()
+reg_upper = linear_model.LinearRegression()
+
+reg_lower.fit(lower_portion["ts_num"].values.reshape(-1, 1), lower_portion["trend"].values)
+reg_upper.fit(upper_portion["ts_num"].values.reshape(-1, 1), upper_portion["trend"].values)
+
+# Print the slopes before and after the changepoint
+print(f"Slope before changepoint ({changepoints[0]}): {reg_lower.coef_}")
+print(f"Slope after changepoint ({changepoints[0]}): {reg_upper.coef_}")
+# Print the slopes before and after the changepoint for trend analysis
+print(f"Slope before changepoint ({changepoints[0]}): {reg_lower.coef_}")
+print(f"Slope after changepoint ({changepoints[0]}): {reg_upper.coef_}")

@@ -1,0 +1,33 @@
+
+
+
+
+explained variance ratio (first two components): [0.58792022 0.41207978]
+
+Variance of the principal components:
+principal component 1    1.176036
+principal component 2    0.824297
+dtype: float64
+
+Principal component 1 explains more variance, therefore, it's more correlated with fire proneness in counties.
+
+
+     STATE      COUNTY  principal component 1
+3580    NV        Elko              31.180221
+2093    LA  LIVINGSTON              -0.468998
+4452    SD    BonHomme              -0.468998
+5476    VT         025              -0.468998
+5624    WA    Kitsap C              -0.468998
+5765    WI          68              -0.468998
+5791    WI        Door              -0.468998
+
+Following are the most and least fire-prone countries based on the PCA analysis:
+     STATE      COUNTY  principal component 1
+3580    NV        Elko              31.180221
+2093    LA  LIVINGSTON              -0.468998
+4452    SD    BonHomme              -0.468998
+5476    VT         025              -0.468998
+5624    WA    Kitsap C              -0.468998
+5765    WI          68              -0.468998
+5791    WI        Door              -0.468998
+

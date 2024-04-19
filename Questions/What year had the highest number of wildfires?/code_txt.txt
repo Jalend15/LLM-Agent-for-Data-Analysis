@@ -1,0 +1,28 @@
+# Importing necessary libraries
+import sqlite3
+import pandas as pd
+
+# Establishing a connection to the SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# Executing the SQL query to group the data by 'FIRE_YEAR' and count the number of wildfires in each year
+wildfires_per_year = pd.read_sql_query("SELECT FIRE_YEAR, COUNT(*) AS Num_Fires FROM fires GROUP BY FIRE_YEAR", cnx)
+
+# Displaying the DataFrame with the count of wildfires per year
+print(wildfires_per_year)
+# Sorting the 'wildfires_per_year' DataFrame in descending order based on the number of fires
+wildfires_per_year_sorted = wildfires_per_year.sort_values(by='Num_Fires', ascending=False)
+
+# Identifying the year with the highest number of wildfires
+year_with_most_fires = wildfires_per_year_sorted.iloc[0]['FIRE_YEAR']
+num_fires_highest_year = wildfires_per_year_sorted.iloc[0]['Num_Fires']
+
+# Displaying the year with the highest number of wildfires
+print(f"The year with the highest number of wildfires is {year_with_most_fires} with {num_fires_highest_year} wildfires.")
+# Extracting the year with the highest number of wildfires from the sorted DataFrame
+year_with_highest_wildfires = wildfires_per_year_sorted.iloc[0]['FIRE_YEAR']
+
+# Displaying the year with the highest number of wildfires
+print(f"The year with the highest number of wildfires is {year_with_highest_wildfires}.")
+# Print the year with the highest number of wildfires as the final answer
+print(f"The year with the highest number of wildfires is {year_with_highest_wildfires}.")

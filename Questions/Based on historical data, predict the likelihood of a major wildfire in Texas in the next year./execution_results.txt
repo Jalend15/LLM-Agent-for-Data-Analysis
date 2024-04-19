@@ -1,0 +1,43 @@
+
+
+Frequency of Major Wildfires in Texas Over the Years:
+FIRE_YEAR
+2002      1
+2005      2
+2006      5
+2008      4
+2009     42
+2010     19
+2011    199
+2012      6
+2013      3
+2014     12
+2015     18
+dtype: int64
+
+Total Size of Major Wildfires in Texas Over the Years:
+FIRE_YEAR
+2002       4028.0
+2005       2700.0
+2006     437278.0
+2008      89598.0
+2009     228820.0
+2010      60931.0
+2011    2608551.0
+2012      30644.0
+2013       9420.0
+2014      70690.0
+2015      92088.5
+Name: FIRE_SIZE, dtype: float64
+
+            ds       yhat  yhat_lower  yhat_upper
+371 2015-12-28  92.647126   25.417177  160.238947
+372 2015-12-29  94.021415   21.097552  159.431018
+373 2015-12-30  87.898751   13.865649  158.622255
+374 2015-12-31  74.239066    8.051053  139.832040
+375 2016-01-01  53.205828  -13.856677  125.776835
+
+Likelihood of Major Wildfire in Texas in the Next Year:
+            ds       yhat  yhat_lower  yhat_upper
+375 2016-01-01  53.205828  -13.856677  125.776835
+

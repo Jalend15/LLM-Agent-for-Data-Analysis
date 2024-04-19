@@ -1,0 +1,87 @@
+   FIRE_YEAR  DISCOVERY_DOY DISCOVERY_TIME  CONT_DOY CONT_TIME  STAT_CAUSE_CODE STAT_CAUSE_DESCR  FIRE_SIZE   LATITUDE   LONGITUDE STATE COUNTY
+0       2005             33           1300      33.0      1730              9.0    Miscellaneous       0.10  40.036944 -121.005833    CA     63
+1       2004            133           0845     133.0      1530              1.0        Lightning       0.25  38.933056 -120.404444    CA     61
+2       2004            152           1921     152.0      2024              5.0   Debris Burning       0.10  38.984167 -120.735556    CA     17
+3       2004            180           1600     185.0      1400              1.0        Lightning       0.10  38.559167 -119.913333    CA      3
+4       2004            180           1600     185.0      1200              1.0        Lightning       0.10  38.559167 -119.933056    CA      3
+
+   FIRE_YEAR  DISCOVERY_DOY DISCOVERY_TIME  CONT_DOY CONT_TIME  STAT_CAUSE_CODE STAT_CAUSE_DESCR  FIRE_SIZE   LATITUDE   LONGITUDE STATE COUNTY combined_date_dis combined_date_con fire_duration  weekday  month
+0       2005             33           1300      33.0      1730              9.0    Miscellaneous       0.10  40.036944 -121.005833    CA     63        2005-02-02        2005-02-02        0 days        2      2
+1       2004            133           0845     133.0      1530              1.0        Lightning       0.25  38.933056 -120.404444    CA     61        2004-05-12        2004-05-12        0 days        2      5
+2       2004            152           1921     152.0      2024              5.0   Debris Burning       0.10  38.984167 -120.735556    CA     17        2004-05-31        2004-05-31        0 days        0      5
+3       2004            180           1600     185.0      1400              1.0        Lightning       0.10  38.559167 -119.913333    CA      3        2004-06-28        2004-07-03        5 days        0      6
+4       2004            180           1600     185.0      1200              1.0        Lightning       0.10  38.559167 -119.933056    CA      3        2004-06-28        2004-07-03        5 days        0      6
+
+Frequency of different fire causes:
+Debris Burning       139336
+Lightning            115140
+Miscellaneous        102070
+Arson                 92598
+Equipment Use         33333
+Campfire              28389
+Missing/Undefined     27031
+Smoking               15065
+Children              12241
+Railroad               5778
+Powerline              5601
+Fireworks              2667
+Structure              1386
+Name: STAT_CAUSE_DESCR, dtype: int64
+
+   STATE  COUNTY  FIRE_SIZE   LATITUDE   LONGITUDE  weekday  month  STAT_CAUSE_DESCR
+0      4     182       0.10  40.036944 -121.005833        2      2                 7
+1      4     180       0.25  38.933056 -120.404444        2      5                 6
+2      4      97       0.10  38.984167 -120.735556        0      5                 3
+3      4     143       0.10  38.559167 -119.913333        0      6                 6
+4      4     143       0.10  38.559167 -119.933056        0      6                 6
+
+Sample of Imputed Data:
+   STATE  COUNTY  FIRE_SIZE   LATITUDE   LONGITUDE  weekday  month
+0    8.0   463.0        0.5  29.931700  -82.138600      5.0    6.0
+1    4.0  2401.0        1.0  40.365714 -122.202172      2.0    7.0
+2   36.0  1300.0        0.2  42.495000 -122.793060      1.0    5.0
+3    9.0   665.0        7.7  34.563889  -85.476139      6.0    3.0
+4   48.0  1610.0        8.7  45.170142  -87.860125      1.0    6.0
+
+Sample of Data with Dropped Rows:
+         STATE  COUNTY  FIRE_SIZE   LATITUDE   LONGITUDE  weekday  month
+1682188      8     463        0.5  29.931700  -82.138600        5      6
+320632       4    2401        1.0  40.365714 -122.202172        2      7
+1826163     36    1300        0.2  42.495000 -122.793060        1      5
+1753019      9     665        7.7  34.563889  -85.476139        6      3
+792648      48    1610        8.7  45.170142  -87.860125        1      6
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.57      0.45      0.50     18439
+           1       0.51      0.28      0.36      5717
+           2       0.35      0.02      0.04      2441
+           3       0.52      0.75      0.62     28068
+           4       0.37      0.12      0.18      6645
+           5       0.48      0.12      0.19       528
+           6       0.72      0.85      0.78     22950
+           7       0.54      0.59      0.56     20426
+           8       0.59      0.64      0.61      5377
+           9       0.38      0.03      0.06      1103
+          10       0.66      0.10      0.18      1139
+          11       0.40      0.01      0.02      3033
+          12       0.00      0.00      0.00       261
+
+    accuracy                           0.58    116127
+   macro avg       0.47      0.31      0.32    116127
+weighted avg       0.56      0.58      0.54    116127
+
+
+Feature Importance Scores:
+     Feature  Importance
+4  LONGITUDE    0.324051
+0      STATE    0.285410
+6      month    0.148905
+3   LATITUDE    0.090445
+1     COUNTY    0.081537
+2  FIRE_SIZE    0.048126
+5    weekday    0.021525
+
+Comprehensive insights and recommendations based on the model outcomes have been provided.
+

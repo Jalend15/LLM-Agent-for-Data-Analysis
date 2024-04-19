@@ -1,0 +1,20 @@
+
+
+
+
+
+Explained Variance Ratio by Principal Components:
+[0.74781669 0.14457335 0.10760996]
+Principal Components:
+[[ 0.2165963   0.96433949  0.15210325]
+ [ 0.11881476 -0.18068232  0.97633854]
+ [-0.96900418  0.1933992   0.15371288]]
+
+Explained Variance Ratio by Principal Components:
+[0.74781669 0.14457335 0.10760996]
+The most fire-prone county based on PCA is: 110
+The least fire-prone county based on PCA is: 122
+
+The most fire-prone county based on PCA is: 110
+The least fire-prone county based on PCA is: 122
+

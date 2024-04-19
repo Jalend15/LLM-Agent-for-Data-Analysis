@@ -1,0 +1,137 @@
+# Query to extract state, county, and monthly counts of fires per county
+query = """
+SELECT STATE, COUNTY, STRFTIME('%Y-%m', DISCOVERY_DATE) AS MONTH_YEAR, COUNT(*) AS FIRE_COUNT
+FROM fires
+GROUP BY STATE, COUNTY, MONTH_YEAR
+"""
+
+# Connect to the SQLite database and execute the query
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+monthly_fire_counts = pd.read_sql_query(query, cnx)
+
+# Close the database connection
+cnx.close()
+
+# Display the extracted data
+print(monthly_fire_counts.head())
+# Import necessary libraries
+import sqlite3
+import pandas as pd
+
+# Query to extract state, county, and monthly counts of fires per county
+query = """
+SELECT STATE, COUNTY, STRFTIME('%Y-%m', DISCOVERY_DATE) AS MONTH_YEAR, COUNT(*) AS FIRE_COUNT
+FROM fires
+GROUP BY STATE, COUNTY, MONTH_YEAR
+"""
+
+# Connect to the SQLite database and execute the query
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+monthly_fire_counts = pd.read_sql_query(query, cnx)
+
+# Close the database connection
+cnx.close()
+
+# Display the extracted data
+print(monthly_fire_counts.head())
+# Merge state and county names into a single 'State_County' column
+monthly_fire_counts['State_County'] = monthly_fire_counts['STATE'] + '_' + monthly_fire_counts['COUNTY']
+
+# Drop the individual 'STATE' and 'COUNTY' columns if necessary
+# monthly_fire_counts.drop(columns=['STATE', 'COUNTY'], inplace=True)
+
+# Display the updated 'monthly_fire_counts' dataframe
+print(monthly_fire_counts.head())
+# Query to retrieve the top 10 counties based on total fire duration, size, and counts
+query = """
+SELECT COUNTY, 
+       SUM(JULIANDAY(CONT_DATE) - JULIANDAY(DISCOVERY_DATE)) AS TOTAL_FIRE_DURATION, 
+       SUM(FIRE_SIZE) AS TOTAL_FIRE_SIZE,
+       COUNT(*) AS FIRE_COUNT
+FROM fires
+GROUP BY COUNTY
+ORDER BY TOTAL_FIRE_DURATION DESC, TOTAL_FIRE_SIZE DESC, FIRE_COUNT DESC
+LIMIT 10
+"""
+
+# Connect to the SQLite database and execute the query
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+top_counties_stats = pd.read_sql_query(query, cnx)
+
+# Close the database connection
+cnx.close()
+
+# Display the top 10 counties based on fire duration, size, and counts
+print(top_counties_stats)
+# Import necessary libraries
+from sklearn.preprocessing import StandardScaler
+
+# Initialize the StandardScaler
+scaler = StandardScaler()
+
+# Standardize the numerical metrics in 'top_counties_stats'
+scaled_data = scaler.fit_transform(top_counties_stats[['TOTAL_FIRE_DURATION', 'TOTAL_FIRE_SIZE', 'FIRE_COUNT']])
+
+# Create a new DataFrame with standardized metrics
+top_counties_stats_scaled = pd.DataFrame(scaled_data, columns=['STD_FIRE_DURATION', 'STD_FIRE_SIZE', 'STD_FIRE_COUNT'])
+
+# Concatenate the standardized metrics with the original 'top_counties_stats'
+top_counties_stats = pd.concat([top_counties_stats, top_counties_stats_scaled], axis=1)
+
+# Display the standardized metrics for comparison
+print(top_counties_stats)
+# Import necessary libraries
+from sklearn.decomposition import PCA
+
+# Initialize the PCA model
+pca = PCA()
+
+# Fit and transform the data using PCA
+principal_components = pca.fit_transform(top_counties_stats[['STD_FIRE_DURATION', 'STD_FIRE_SIZE', 'STD_FIRE_COUNT']])
+
+# Store the variance of the principal components
+variance_ratio = pca.explained_variance_ratio_
+
+# Display the variance of the principal components
+print("Variance of Principal Components:")
+print(variance_ratio)
+# Analyze the variance of principal components to identify the most significant ones
+print("Variance of Principal Components:")
+print(variance_ratio)
+
+# Identify the most significant principal component based on the variance
+most_significant_component = variance_ratio.argmax() + 1
+
+print(f"\nThe most significant principal component is Component {most_significant_component}")
+# Identify the most significant principal component based on the variance
+most_significant_component = variance_ratio.argmax()
+# Extract the principal component with the highest variance
+significant_component_values = principal_components[:, most_significant_component]
+
+# Add the significant component values to the 'top_counties_stats' DataFrame
+top_counties_stats['Significant_Component'] = significant_component_values
+
+# Find the county with the highest value on the significant component
+highest_value_county = top_counties_stats.loc[top_counties_stats['Significant_Component'].idxmax(), 'COUNTY']
+
+# Find the county with the lowest value on the significant component
+lowest_value_county = top_counties_stats.loc[top_counties_stats['Significant_Component'].idxmin(), 'COUNTY']
+
+# Display the counties with the highest and lowest values on the significant component
+print(f"County with the highest value on the significant component: {highest_value_county}")
+print(f"County with the lowest value on the significant component: {lowest_value_county}")
+# Format the final results for reporting, detailing the findings on fire-prone counties
+
+# Define the results for reporting
+report_results = {
+    'Most Fire-Prone County': highest_value_county,
+    'Least Fire-Prone County': lowest_value_county,
+    'Top 10 Counties with Fire Statistics': top_counties_stats[['COUNTY', 'TOTAL_FIRE_DURATION', 'TOTAL_FIRE_SIZE', 'FIRE_COUNT']]
+}
+
+# Display the formatted results
+print("\nFire-Prone Counties Analysis Report:\n")
+print(f"Most Fire-Prone County: {highest_value_county}")
+print(f"Least Fire-Prone County: {lowest_value_county}\n")
+print("Top 10 Counties with Fire Statistics:")
+print(top_counties_stats[['COUNTY', 'TOTAL_FIRE_DURATION', 'TOTAL_FIRE_SIZE', 'FIRE_COUNT']])

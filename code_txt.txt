@@ -1,0 +1,66 @@
+# Import necessary libraries
+import sqlite3
+import pandas as pd
+
+# Connect to the SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# Extract relevant columns from the 'fires' table
+query = "SELECT FIRE_YEAR, STAT_CAUSE_DESCR, STATE, COUNTY, FIPS_NAME, FIRE_SIZE FROM fires"
+df = pd.read_sql_query(query, cnx)
+
+# Remove any missing or null values in the selected columns
+df = df.dropna(subset=['FIRE_YEAR', 'STAT_CAUSE_DESCR', 'STATE', 'COUNTY', 'FIPS_NAME', 'FIRE_SIZE'])
+
+# Display the cleaned dataframe
+print(df.head())
+# Convert the 'FIRE_YEAR' column to datetime format for uniform date handling
+df['FIRE_YEAR'] = pd.to_datetime(df['FIRE_YEAR'], format='%Y')
+
+# Display the updated dataframe
+print(df.head())
+# Define the metric for fire-proneness as the total number of fire occurrences per country
+# Calculate the total count of fires for each country by aggregating the data based on the 'STATE' column
+country_fire_counts = df.groupby('STATE').size().reset_index(name='Total_Fires')
+
+# Display the total count of fires for each country
+print(country_fire_counts)
+# Execute an SQL query to group data by 'STATE', count the number of fires in each state, and sum up the total fires per country
+query = """
+SELECT STATE, COUNT(FIRE_SIZE) AS Fires_Count, SUM(FIRE_SIZE) AS Total_Fires 
+FROM fires 
+GROUP BY STATE 
+ORDER BY Total_Fires ASC
+"""
+
+# Query the database and fetch the results
+result = pd.read_sql_query(query, cnx)
+
+# Display the result sorted in ascending order to identify the country with the least fire occurrences
+print(result)
+import matplotlib.pyplot as plt
+
+# Create a bar chart to visualize the distribution of fire occurrences across different states or countries
+plt.figure(figsize=(12, 6))
+plt.bar(country_fire_counts['STATE'], country_fire_counts['Total_Fires'], color='skyblue')
+plt.xlabel('State')
+plt.ylabel('Total Fire Incidents')
+plt.title('Distribution of Fire Occurrences Across States')
+plt.xticks(rotation=45)
+plt.grid(axis='y', linestyle='--', alpha=0.6)
+plt.show()
+
+# Highlight the country with the least fire incidents based on the analysis
+country_least_fires = country_fire_counts.loc[country_fire_counts['Total_Fires'].idxmin()]
+print(f"Country with the least fire incidents: {country_least_fires['STATE']} - Total Fires: {country_least_fires['Total_Fires']}")
+# Present the findings and identify the country with the least fire incidents
+country_least_fires = country_fire_counts.loc[country_fire_counts['Total_Fires'].idxmin()]
+print(f"Country with the least fire incidents: {country_least_fires['STATE']} - Total Fires: {country_least_fires['Total_Fires']}")
+
+# Provide insights into potential reasons for the lower fire incidents in that country
+# Factors contributing to lower fire incidents could include:
+# 1. Climate conditions: Cooler, wetter climates may reduce fire risk.
+# 2. Geographical features: Regions with less forest cover or natural barriers to fire spread.
+# 3. Effective fire management strategies: Implementation of robust prevention and suppression measures.
+# 4. Adequate resources: Sufficient funding and equipment for fire monitoring and response.
+# 5. Public awareness and education: Strong community engagement in fire safety practices.

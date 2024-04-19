@@ -1,0 +1,125 @@
+   FIRE_YEAR STAT_CAUSE_DESCR STATE COUNTY  FIPS_NAME  FIRE_SIZE
+0       2005    Miscellaneous    CA     63     Plumas       0.10
+1       2004        Lightning    CA     61     Placer       0.25
+2       2004   Debris Burning    CA     17  El Dorado       0.10
+3       2004        Lightning    CA      3     Alpine       0.10
+4       2004        Lightning    CA      3     Alpine       0.10
+
+   FIRE_YEAR STAT_CAUSE_DESCR STATE COUNTY  FIPS_NAME  FIRE_SIZE
+0 2005-01-01    Miscellaneous    CA     63     Plumas       0.10
+1 2004-01-01        Lightning    CA     61     Placer       0.25
+2 2004-01-01   Debris Burning    CA     17  El Dorado       0.10
+3 2004-01-01        Lightning    CA      3     Alpine       0.10
+4 2004-01-01        Lightning    CA      3     Alpine       0.10
+
+   STATE  Total_Fires
+0     AK          310
+1     AL        41560
+2     AR        19772
+3     AZ        24585
+4     CA        56221
+5     CO        19347
+6     CT         4323
+7     DE           38
+8     FL        84103
+9     GA       150514
+10    HI         9735
+11    IA         3685
+12    ID        22912
+13    IL         1627
+14    IN          215
+15    KS         6109
+16    KY        19903
+17    LA        13242
+18    MA         2180
+19    MD         3152
+20    ME        12522
+21    MI         9857
+22    MN        30616
+23    MO        14198
+24    MS        48295
+25    MT        16015
+26    NC        47592
+27    ND          966
+28    NE          134
+29    NH         2369
+30    NJ        25791
+31    NM        16388
+32    NV        10941
+33    NY        80018
+34    OH         2963
+35    OK        23903
+36    OR        40178
+37    PA         7300
+38    PR           76
+39    RI          396
+40    SC        53341
+41    SD         4495
+42    TN        17571
+43    TX       136462
+44    UT        22207
+45    VA        13090
+46    VT          379
+47    WA        23236
+48    WI        28157
+49    WV        21629
+50    WY         7699
+
+   STATE  Fires_Count   Total_Fires
+0     DC           66  3.250000e+01
+1     RI          480  5.624100e+02
+2     VT          456  1.556486e+03
+3     NH         2452  3.862007e+03
+4     DE          171  4.833650e+03
+5     MA         2626  6.124730e+03
+6     CT         4976  1.124331e+04
+7     IN         2098  1.732289e+04
+8     IL         2327  2.280751e+04
+9     OH         3479  2.393385e+04
+10    ME        13150  2.455564e+04
+11    PA         8712  5.473077e+04
+12    MD         3622  6.727953e+04
+13    IA         4134  7.149196e+04
+14    WI        31861  8.867527e+04
+15    NY        80870  9.377197e+04
+16    NJ        25949  1.319635e+05
+17    PR        22081  1.386884e+05
+18    MI        10502  1.402294e+05
+19    HI         9895  2.527610e+05
+20    VA        21833  3.416458e+05
+21    ND        15201  4.126072e+05
+22    MO        17953  4.595257e+05
+23    TN        31154  4.866524e+05
+24    AR        31663  5.089118e+05
+25    SC        81315  5.416661e+05
+26    WV        21967  5.766311e+05
+27    LA        30013  6.610239e+05
+28    NC       111277  7.305215e+05
+29    AL        66570  9.205453e+05
+30    KS         7673  9.226138e+05
+31    NE         7973  9.673988e+05
+32    KY        27089  1.014891e+06
+33    MS        79230  1.135484e+06
+34    MN        44769  1.210605e+06
+35    SD        30963  1.570866e+06
+36    GA       168867  1.589959e+06
+37    CO        34157  1.842309e+06
+38    WY        14166  2.401471e+06
+39    OK        43239  3.232490e+06
+40    UT        30725  4.114926e+06
+41    FL        90261  4.436748e+06
+42    WA        33513  4.782218e+06
+43    AZ        71586  5.576681e+06
+44    MT        40767  6.279526e+06
+45    NM        37478  6.380042e+06
+46    OR        61088  8.412801e+06
+47    NV        16956  9.015855e+06
+48    TX       142021  9.786218e+06
+49    CA       189550  1.274586e+07
+50    ID        36698  1.368433e+07
+51    AK        12843  3.223309e+07
+
+Country with the least fire incidents: DE - Total Fires: 38
+
+Country with the least fire incidents: DE - Total Fires: 38
+

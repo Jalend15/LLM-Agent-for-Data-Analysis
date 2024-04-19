@@ -1,0 +1,92 @@
+# Import necessary libraries
+import pandas as pd
+import sqlite3
+
+# Create a connection to the SQLite database
+cnx = sqlite3.connect('FPA_FOD_20170508.sqlite')
+
+# SQL query to retrieve required data from the database
+query = "SELECT STATE, COUNTY, FIRE_SIZE FROM fires"
+
+# Execute the query and store the results in a DataFrame
+fire_data = pd.read_sql_query(query, cnx)
+
+# The DataFrame 'fire_data' now contains the state, county and fire size information for each record in the 'fires' table.
+# Group the 'fire_data' DataFrame by 'STATE' and 'COUNTY' and aggregate the data by counting the number of fire incidents.
+# This will give us the total fire incidents for each county.
+county_fire_counts = fire_data.groupby(['STATE', 'COUNTY']).size().reset_index(name='FIRE_COUNT')
+
+# 'county_fire_counts' DataFrame now contains the aggregated information about total number of fire incidents in each county of every state.
+# Calculate the sum of 'FIRE_SIZE' for each 'STATE' and 'COUNTY' to get the total area affected by fires in each county
+fire_size_sum = fire_data.groupby(['STATE', 'COUNTY'])['FIRE_SIZE'].sum().reset_index(name='TOTAL_FIRE_SIZE')
+
+# Merge 'fire_size_sum' with 'county_fire_counts' DataFrame to append this information
+county_fire_counts = pd.merge(county_fire_counts, fire_size_sum, how='left', on=['STATE', 'COUNTY'])
+
+# 'county_fire_counts' DataFrame now contains an additional column 'TOTAL_FIRE_SIZE' 
+# which represents the total area affected by fires in each county of every state.
+# Import necessary library
+from scipy.stats import zscore
+
+# Calculate z-score for 'FIRE_COUNT' and 'TOTAL_FIRE_SIZE' columns and add them as new columns 
+# 'FIRE_COUNT_ZSCORE', 'FIRE_AREA_ZSCORE' to the 'county_fire_counts' DataFrame.
+county_fire_counts['FIRE_COUNT_ZSCORE'] = zscore(county_fire_counts['FIRE_COUNT'])
+county_fire_counts['FIRE_AREA_ZSCORE'] = zscore(county_fire_counts['TOTAL_FIRE_SIZE'])
+
+# The 'county_fire_counts' DataFrame now contains standardized z-scores for the total number of fire incidents and total fire area in each county.
+# Import necessary libraries
+from sklearn.decomposition import PCA
+
+# Initialize PCA model with 2 components
+pca = PCA(n_components=2)
+
+# Fit the model with the standardized columns
+principalComponents = pca.fit_transform(county_fire_counts[['FIRE_COUNT_ZSCORE', 'FIRE_AREA_ZSCORE']])
+
+# Create a DataFrame that will hold the principal components
+principalDf = pd.DataFrame(data = principalComponents, columns = ['principal component 1', 'principal component 2'])
+
+# The 'principalDf' DataFrame now holds the principal components that explain the most variance in fire incidents by county.
+
+# To report the variance explained by each of the principal components
+print('explained variance ratio (first two components): %s'
+      % str(pca.explained_variance_ratio_))
+# This code can be used to determine the component that's more relevant for explaining fire proneness in counties.
+
+def pca_analysis(principal_df):
+    # Calculate variance of the principal components
+    variance = principal_df.var()
+    
+    # Print variance
+    print("Variance of the principal components:")
+    print(variance)
+    
+    # Determines which component explains more variance
+    if variance[0] > variance[1]:
+        print("\nPrincipal component 1 explains more variance, therefore, it's more correlated with fire proneness in counties.")
+    else:
+        print("\nPrincipal component 2 explains more variance, therefore, it's more correlated with fire proneness in counties.")
+
+
+# Call the function with the dataframe containing the principal components
+pca_analysis(principalDf)
+# Append the principal components to 'county_fire_counts' DataFrame
+county_fire_counts[['principal component 1', 'principal component 2']] = principalDf
+
+# We'll assume that 'principal component 1' shows the highest variance (correlates the most with fire-proneness)
+
+# Identify the county with the highest score on 'principal component 1'
+most_fire_prone = county_fire_counts[county_fire_counts['principal component 1'] == county_fire_counts['principal component 1'].max()][['STATE', 'COUNTY', 'principal component 1']]
+
+# Identify the county with the lowest score on 'principal component 1'
+least_fire_prone = county_fire_counts[county_fire_counts['principal component 1'] == county_fire_counts['principal component 1'].min()][['STATE', 'COUNTY', 'principal component 1']]
+
+# Concatenate the most and least fire-prone counties to create a new DataFrame
+fire_prone_counties = pd.concat([most_fire_prone, least_fire_prone])
+
+# The 'fire_prone_counties' DataFrame now holds the information of the most and least fire-prone counties.
+# Printing the most and least fire-prone counties
+print(fire_prone_counties)
+# Printing the final answer with the most and least fire-prone counties
+print("Following are the most and least fire-prone countries based on the PCA analysis:")
+print(fire_prone_counties)
