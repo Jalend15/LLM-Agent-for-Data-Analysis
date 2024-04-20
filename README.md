@@ -14,19 +14,21 @@ Agent design
 
 Python notebooks
 -
-* LLM for data analysis - Iterative improvement of the plan using external API.ipynb
-* LLM for data analysis - Iterative improvement of the plan without external tools.ipynb
-* LLM for data analysis - Linear chain.ipynb
-* LLM for data analysis - Reflection with code .ipynb
-* LLM for data analysis - interaction between planner and coder.ipynb
-* LLM for data analysis_sql_planner.ipynb
-* SQL Agent.ipynb
+* LLM for data analysis - Iterative improvement of the plan using external API.ipynb - Follows agent design shown above with addition of external api functionality
+* LLM for data analysis - Iterative improvement of the plan without external tools.ipynb - Follows agent design
+* LLM for data analysis - Linear chain.ipynb - Follows agent design without the loop for iterative improvement
+* LLM for data analysis - Reflection with code .ipynb - Instead of improving plan using error, this code iterates between code generator and interpreter to improve code generation
+* LLM for data analysis - interaction between planner and coder.ipynb - Follows design with no improvement framework
+* LLM for data analysis_sql_planner.ipynb - A simple agent to generate SQL query given natural language query and connect it to a python executor
+* SQL Agent.ipynb - A simple agent to generate and validate SQL query given natural language query
 
 
 
 Folder information
 -
-Questions - Covers execution details of the queries tested
+- Questions - Covers execution details of the queries tested
+- Incontextlearning - Contains examples which will be useful for prompting
+- perfectprompts - Contains example prompts to help improve data analysis tasks
 
 Relevant documents
 -
