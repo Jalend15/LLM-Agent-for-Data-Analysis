@@ -5,7 +5,7 @@ This repository contains ipynb notebooks of various Agent design to tackle data 
 
 Dataset details
 -
-Download Dataset used - FPA_FOD_20170508.sqlite (https://www.kaggle.com/datasets/rtatman/188-million-us-wildfires/data)
+Download Dataset used - [FPA_FOD_20170508.sqlite](https://www.kaggle.com/datasets/rtatman/188-million-us-wildfires/data)
 
 Agent design
 -
@@ -30,7 +30,7 @@ Questions - Covers execution details of the queries tested
 
 Relevant documents
 -
-https://docs.google.com/presentation/d/1ZKcNQFotnZWbm7ogsoCIxgunRsfYNOG12g8GKUXuBjQ/edit?usp=sharing
+[Design slides](https://docs.google.com/presentation/d/1ZKcNQFotnZWbm7ogsoCIxgunRsfYNOG12g8GKUXuBjQ/edit?usp=sharing)
 
 
 
