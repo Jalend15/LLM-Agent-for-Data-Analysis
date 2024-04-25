@@ -1,6 +1,6 @@
 # LLM Agent for data analyis
 
-This repository contains ipynb notebooks of various Agent design to tackle data analysis tasks of fires dataset.
+This repository contains ipynb notebooks of various Agent designs to tackle data analysis tasks of fires dataset.
 
 
 Dataset details
